@@ -1,0 +1,15 @@
+.github
+.gitignore
+.releaserc
+.vscode
+*.json
+*.md
+*.png
+*.tar
+**/.DS_Store
+**/*.__test__.lua
+data
+node_modules
+src/modules
+tar-exclude.txt
+yarn.lock

@@ -1,0 +1,5 @@
+*.tar
+.vscode
+node_modules
+*.data
+**/.DS_Store
