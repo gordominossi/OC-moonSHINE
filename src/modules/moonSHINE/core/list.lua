@@ -5,9 +5,10 @@ local Help = {
 function Help.new()
     local self = {}
 
+    ---@param packages Package[]
+    ---@return string[]
     function self.execute(packages)
         local formattedPackages = {}
-
         for _, package in ipairs(packages or {}) do
             table.insert(
                 formattedPackages,

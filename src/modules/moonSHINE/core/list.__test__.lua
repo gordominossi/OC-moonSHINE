@@ -26,8 +26,8 @@ describe('Help cli command', function()
         table.insert(formattedPackagesList, { package.name .. '(' .. package.size .. ')' .. ':', package.description })
     end
 
-    it('should return an empty table when called with no arguments', function()
-        local result = list.execute()
+    it('should return an empty table when called with an empty list', function()
+        local result = list.execute({})
         assert.same({}, result)
     end)
 
