@@ -1,10 +1,15 @@
+---@type HelpCommand
 local Help = {
     name = 'help',
     description = 'Prints this help.'
 }
+
 function Help.new()
+    ---@class HelpCommand
     local self = {}
 
+    ---@param commands? table[]
+    ---@return string[]
     function self.execute(commands)
         local commandList
         if not commands then
@@ -19,16 +24,9 @@ function Help.new()
             error()
         end
 
-
-        local commandDescriptions = {
-        }
-        for _, command in ipairs(commandList) do
-            commandDescriptions[command.name] = command.description
-        end
-
         local result = {}
-        for command, description in pairs(commandDescriptions) do
-            table.insert(result, { command .. ':', description })
+        for _, command in pairs(commandList) do
+            table.insert(result, { command.name .. ':', command.description })
         end
 
         return result
