@@ -20,7 +20,6 @@ describe('Help cli command', function()
         assert.same(helpDescriptionTable, result[1])
     end)
 
-
     it('should return a table containing only the description table of the command passed in', function()
         local result = help.execute(mockCommand)
         assert.equals(1, #result)
