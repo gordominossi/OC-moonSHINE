@@ -1,0 +1,19 @@
+Roadmap:
+v0: - cli package manager
+v1: - supervisor
+    - GUI package manager
+    - GUI component library
+v2: - GUI framework
+        - Parsers
+        - Documents
+            - Renderer
+            - 
+        - Hooks
+    - browser
+v3: - network communication
+
+GUI framework:
+v0: - Parsers
+v1: - Documents
+    - Renderer
+v2: - Hooks
