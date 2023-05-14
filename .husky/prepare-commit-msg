@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 if [ -z "${2-}" ]; then
-    exec < /dev/tty && yarn git-cz --hook
+    exec < /dev/tty && yarn cz --hook
 fi
