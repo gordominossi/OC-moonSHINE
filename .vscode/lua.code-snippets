@@ -28,10 +28,6 @@
         "scope": "lua",
         "prefix": "test",
         "body": [
-            "if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then",
-            "    require('lldebugger').start()",
-            "end",
-            "",
             "local describe = _ENV.describe",
             "local it = _ENV.it",
             "",
