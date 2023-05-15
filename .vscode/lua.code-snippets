@@ -23,5 +23,24 @@
             "$2"
         ],
         "description": "Creates new class"
+    },
+    "Fill in test boilerplate": {
+        "scope": "lua",
+        "prefix": "test",
+        "body": [
+            "if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then",
+            "    require('lldebugger').start()",
+            "end",
+            "",
+            "local describe = _ENV.describe",
+            "local it = _ENV.it",
+            "",
+            "describe('$1', function()",
+            "    it('Should ', function()",
+            "    end)",
+            "end)",
+            "$2",
+        ],
+        "description": "Fills up new test boilerplate"
     }
 }
