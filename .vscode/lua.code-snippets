@@ -12,15 +12,21 @@
         "body": [
             "---@type $1",
             "local $1 = {}",
+            "",
+            "---@return $1",
             "function $1.new()",
             "    ---@class $1",
             "    local self = {}",
+            "",
+            "    function self.$2()",
+            "        ",
+            "    end",
             "",
             "    return self",
             "end",
             "",			
             "return $1",
-            "$2"
+            ""
         ],
         "description": "Creates new class"
     },

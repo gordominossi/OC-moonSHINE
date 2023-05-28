@@ -1,5 +1,7 @@
 {
     "recommendations": [
-        "sumneko.lua"
+        "sumneko.lua",
+        "bubuabu.busted-test-explorer",
+        "tomblind.local-lua-debugger-vscode"
     ]
 }

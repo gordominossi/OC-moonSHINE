@@ -14,7 +14,6 @@
             "args": [
                 "-e \"require('lldebugger').start()\"",
                 ".",
-                "-p __test__",
             ],
         }
     ]
