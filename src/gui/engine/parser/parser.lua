@@ -3,6 +3,11 @@ local merge = require('lib.language-extensions').mergeTables
 local Text = require('src.gui.engine.node.text')
 local Element = require('src.gui.engine.node.element')
 
+local function mergeStyle(parentComponent, childComponent)
+    local style = merge(childComponent.style, parentComponent.style)
+    return merge(childComponent, { style = style })
+end
+
 ---@type Parser
 local Parser = {}
 
@@ -19,19 +24,23 @@ function Parser.new()
 
         local _children = {}
         for i = 2, #component do
-            _children[i - 1] = self.execute(component[i] --[[@as Component]])
+            local childComponent = mergeStyle(component, component[i])
+            _children[i - 1] = self.execute(childComponent)
         end
+
         local _props = merge({ children = _children }, component)
 
+        if type(componentType) == 'function'
+            or (getmetatable(componentType) or {}).__call
+        then
+            return self.execute(component.type(_props))
+        end
+
         if type(componentType) == 'table' then
-            if (getmetatable(componentType) or {}).__call then
-                local ret = self.execute(component.type(_props))
-                return ret
-            else
-                componentType = nil
-                local child = self.execute(component[1] --[[@as Component]])
-                table.insert(_children, 1, child)
-            end
+            componentType = nil
+            local childComponent = mergeStyle(component, component[1])
+            local child = self.execute(childComponent --[[@as Component]])
+            table.insert(_children, 1, child)
         end
 
         if #component == 1 and type(componentType) == 'string'

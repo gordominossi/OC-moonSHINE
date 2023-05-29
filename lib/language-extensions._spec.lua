@@ -4,7 +4,7 @@ local it = _ENV.it
 local mergeTables = require('lib.language-extensions').mergeTables
 
 describe('language extensions', function()
-    describe('merge', function()
+    describe('mergeTables', function()
         local fakeTable = {
             'one',
             'two',

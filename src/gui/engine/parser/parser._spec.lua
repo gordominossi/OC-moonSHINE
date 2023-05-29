@@ -35,16 +35,22 @@ describe('LuaX parser', function()
         it('should have a value the same as input\'s text', function()
             local result = parser.execute(fakeComponent)
 
-            assert.same(fakeComponent[1], result.value)
+            assert.equal(fakeComponent[1], result.value)
         end)
 
         it('should have an inline style', function()
             local result = parser.execute(fakeComponent)
 
-            assert.same('inline', result.props.style.display)
+            assert.equal('inline', result.props.style.display)
         end)
 
         it('should infer the `text` type', function()
+            local result = parser.execute({ 'textGoesHere' })
+
+            assert.same('text', result.type)
+        end)
+
+        it('should have a default `style`', function()
             local result = parser.execute({ 'textGoesHere' })
 
             assert.same(
@@ -86,7 +92,6 @@ describe('LuaX parser', function()
                     type = function(props)
                         return { type = 'fakeType', value = props.text }
                     end,
-
                     text = 'Testing',
                 }
                 spy.on(spyComponent, 'type')
@@ -110,6 +115,25 @@ describe('LuaX parser', function()
             assert.same('div', children[1].type)
         end)
 
+        it('should inherit style from parent', function()
+            local parentComponent = {
+                style = { color = 0x123456 },
+                { style = { visibility = 'hidden' } },
+            }
+
+            local result = parser.execute(parentComponent)
+            local children = result.props.children
+
+            assert.equal(
+                parentComponent.style.color,
+                children[1].props.style.color
+            )
+            assert.equal(
+                parentComponent[1].style.visibility,
+                children[1].props.style.visibility
+            )
+        end)
+
         it('should parse deeply nested children', function()
             local parentComponent = {
                 {},
@@ -120,8 +144,8 @@ describe('LuaX parser', function()
             local result = parser.execute(parentComponent)
             local children = result.props.children
 
-            assert.same('div', children[1].type)
-            assert.same('text', children[2].type)
+            assert.equal('div', children[1].type)
+            assert.equal('text', children[2].type)
             assert.same(fakeNode, children[3].props.children[1])
         end)
     end)
