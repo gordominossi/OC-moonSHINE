@@ -25,6 +25,14 @@ describe('LuaX parser', function()
         }
     }
 
+    local defaultValuesNode = {
+        type = 'div',
+        props = {
+            children = {},
+            style = { color = 0xFFFFFF, display = 'block' },
+        },
+    }
+
     describe('text', function()
         it('should parse a text component', function()
             local result = parser.execute(fakeComponent)
@@ -44,7 +52,7 @@ describe('LuaX parser', function()
             assert.equal('inline', result.props.style.display)
         end)
 
-        it('should infer the `text` type', function()
+        it('should infer the `"text"` `type`', function()
             local result = parser.execute({ 'textGoesHere' })
 
             assert.same('text', result.type)
@@ -72,13 +80,11 @@ describe('LuaX parser', function()
         it('should default to `div` type if none is given', function()
             local result = parser.execute({})
 
-            assert.equal('div', result.type)
+            assert.same(defaultValuesNode, result)
         end)
 
         it('should call the component if it is a function', function()
-            local stubComponent = {
-                type = function() end
-            }
+            local stubComponent = { function() end }
             stub(stubComponent, 'type')
 
             parser.execute(stubComponent)
@@ -86,19 +92,22 @@ describe('LuaX parser', function()
             assert.stub(stubComponent.type).was_called()
         end)
 
-        it('should call the component with arguments if it is a function',
+        it(
+            'should call the component with arguments if it is a function',
             function()
+                local typeFunction = function(props)
+                    return { type = 'fakeType', value = props.text }
+                end
+
                 local spyComponent = {
-                    type = function(props)
-                        return { type = 'fakeType', value = props.text }
-                    end,
+                    typeFunction,
                     text = 'Testing',
                 }
-                spy.on(spyComponent, 'type')
+                spy.on(spyComponent, 1)
 
                 local result = parser.execute(spyComponent)
 
-                assert.spy(spyComponent.type).was_called()
+                assert.spy(spyComponent[1]).was_called()
                 assert.equal('fakeType', result.type)
                 assert.equal(spyComponent.text, result.value)
             end
@@ -112,13 +121,14 @@ describe('LuaX parser', function()
             local result = parser.execute(parentComponent)
             local children = result.props.children
 
-            assert.same('div', children[1].type)
+            assert.same({ defaultValuesNode }, children)
         end)
 
         it('should inherit style from parent', function()
+            local child = { style = { visibility = 'hidden' } }
             local parentComponent = {
                 style = { color = 0x123456 },
-                { style = { visibility = 'hidden' } },
+                child,
             }
 
             local result = parser.execute(parentComponent)
@@ -135,10 +145,11 @@ describe('LuaX parser', function()
         end)
 
         it('should parse deeply nested children', function()
+            local child3 = { fakeComponent }
             local parentComponent = {
                 {},
                 { 'fakeText' },
-                { fakeComponent },
+                child3,
             }
 
             local result = parser.execute(parentComponent)
@@ -146,7 +157,8 @@ describe('LuaX parser', function()
 
             assert.equal('div', children[1].type)
             assert.equal('text', children[2].type)
-            assert.same(fakeNode, children[3].props.children[1])
+            assert.equal('div', children[3].type)
+            assert.same({ fakeNode }, children[3].props.children)
         end)
     end)
 end)

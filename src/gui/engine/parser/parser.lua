@@ -33,7 +33,7 @@ function Parser.new()
         if type(componentType) == 'function'
             or (getmetatable(componentType) or {}).__call
         then
-            return self.execute(component.type(_props))
+            return self.execute(componentType(_props))
         end
 
         if type(componentType) == 'table' then
