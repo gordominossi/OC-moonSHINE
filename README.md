@@ -18,7 +18,7 @@ Provide a curated list of packages for download trough a comprehensible user int
   - Exclude package
   - Install package1
 
-0## Instalation
+## Instalation
     wget -fq setup.lua && setup
 
 ## Usage
