@@ -10,7 +10,7 @@ local Node = {}
 function Node.new(type, props, children)
     props = props or {}
     ---@type Style
-    local _style = merge(
+    local style = merge(
         { color = 0xFFFFFF, display = 'block' },
         props.style or {}
     )
@@ -19,7 +19,7 @@ function Node.new(type, props, children)
     local _props = merge(
         { children = children or {} },
         props,
-        { style = _style }
+        { style = style }
     )
     _props.type = nil
     for i = 1, #_props do
