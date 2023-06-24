@@ -1,3 +1,4 @@
+local colors = require('lib.colors')
 local merge = require('lib.language-extensions').mergeTables
 
 local Node = require('src.gui.engine.node.node')
@@ -9,6 +10,7 @@ local Text = {}
 function Text.new(props)
     props = props or {}
     local _style = merge(
+        { color = colors.white },
         props.style or {},
         { display = 'inline' }
     )

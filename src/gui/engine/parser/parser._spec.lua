@@ -1,8 +1,9 @@
-local describe = _ENV.describe
-local it = _ENV.it
-local spy = _ENV.spy
-local stub = _ENV.stub
+local describe = os.getenv('describe') or _ENV.describe
+local it = os.getenv('it') or _ENV.it
+local spy = os.getenv('spy') or _ENV.spy
+local stub = os.getenv('stub') or _ENV.stub
 
+local colors = require('lib.colors')
 local Parser = require('src.gui.engine.parser.parser')
 
 describe('LuaX parser', function()
@@ -11,7 +12,7 @@ describe('LuaX parser', function()
     local fakeComponent = {
         'Fake text',
         key = 'fakeOCAddress',
-        style = { color = 0xF00BAE, display = 'block' },
+        style = { color = colors.primary, display = 'block' },
     }
 
     ---@type Node
@@ -21,7 +22,7 @@ describe('LuaX parser', function()
         value = fakeComponent[1],
         props = {
             children = {},
-            style = { color = 0xF00BAE, display = 'inline' },
+            style = { color = colors.primary, display = 'inline' },
         }
     }
 
@@ -29,7 +30,7 @@ describe('LuaX parser', function()
         type = 'div',
         props = {
             children = {},
-            style = { color = 0xFFFFFF, display = 'block' },
+            style = { color = colors.background, display = 'block' },
         },
     }
 
@@ -62,7 +63,7 @@ describe('LuaX parser', function()
             local result = parser.execute({ 'textGoesHere' })
 
             assert.same(
-                { color = 0xFFFFFF, display = 'inline' },
+                { color = colors.white, display = 'inline' },
                 result.props.style
             )
         end)
