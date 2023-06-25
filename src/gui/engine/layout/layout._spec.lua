@@ -90,6 +90,21 @@ describe('Layout engine', function()
             assert.same(expectedStyle, result.style)
         end)
 
+        it('should apply custom style if defined', function()
+            local input = parser.execute({
+                type = 'div',
+                style = { color = colors.primary }
+            })
+            local result = layout.execute(input)
+
+            local expectedStyle = {
+                display = 'block',
+                color = colors.primary,
+            }
+
+            assert.same(expectedStyle, result.style)
+        end)
+
         it('should layout a node with a text node child', function()
             local result = layout.execute(fakeElement)
 
