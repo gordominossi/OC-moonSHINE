@@ -4,7 +4,7 @@ local it = os.getenv('it') or _ENV.it
 local colors = require('lib.colors')
 
 local Layout = require('src.gui.engine.layout')
-local Parser = require('src.gui.engine.parser.parser')
+local Parser = require('src.gui.engine.parser')
 
 local mergeTables = require('lib.language-extensions').mergeTables
 
