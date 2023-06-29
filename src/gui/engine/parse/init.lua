@@ -1,7 +1,7 @@
 local merge = require('lib.language-extensions').mergeTables
 
-local Text = require('src.gui.engine.node.text')
-local Element = require('src.gui.engine.node.element')
+local Text = require('src.gui.engine.parse.node.text')
+local Element = require('src.gui.engine.parse.node.element')
 
 local function mergeStyle(parentComponent, childComponent)
     local style = merge(childComponent.style, parentComponent.style)

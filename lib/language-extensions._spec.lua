@@ -1,7 +1,7 @@
 local mergeTables = require('lib.language-extensions').mergeTables
 
-local describe = os.getenv('describe') or _ENV.describe
-local it = os.getenv('it') or _ENV.it
+local describe = _ENV.describe
+local it = _ENV.it
 
 describe('language extensions', function()
     describe('mergeTables', function()

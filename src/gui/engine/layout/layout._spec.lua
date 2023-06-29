@@ -1,10 +1,10 @@
-local describe = os.getenv('describe') or _ENV.describe
-local it = os.getenv('it') or _ENV.it
+local describe = _ENV.describe
+local it = _ENV.it
 
 local colors = require('lib.colors')
 
 local Layout = require('src.gui.engine.layout')
-local Parser = require('src.gui.engine.parser')
+local Parser = require('src.gui.engine.parse')
 
 local mergeTables = require('lib.language-extensions').mergeTables
 

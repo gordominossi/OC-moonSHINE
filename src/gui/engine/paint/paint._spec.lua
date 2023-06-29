@@ -4,7 +4,7 @@ local it = _ENV.it
 local colors = require('lib.colors')
 
 local Layout = require('src.gui.engine.layout')
-local Parser = require('src.gui.engine.parser')
+local Parser = require('src.gui.engine.parse')
 local Paint = require('src.gui.engine.paint')
 
 ---@class PaintObject

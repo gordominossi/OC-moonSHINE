@@ -1,10 +1,10 @@
-local describe = os.getenv('describe') or _ENV.describe
-local it = os.getenv('it') or _ENV.it
-local spy = os.getenv('spy') or _ENV.spy
-local stub = os.getenv('stub') or _ENV.stub
+local describe = _ENV.describe
+local it = _ENV.it
+local spy = _ENV.spy
+local stub = _ENV.stub
 
 local colors = require('lib.colors')
-local Parser = require('src.gui.engine.parser')
+local Parser = require('src.gui.engine.parse')
 
 describe('LuaX parser', function()
     local parser = Parser.new()
