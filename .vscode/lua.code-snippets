@@ -38,10 +38,10 @@
             "local it = _ENV.it",
             "",
             "describe('$1', function()",
-            "    it('Should ', function()",
+            "    it('Should $2', function()",
             "    end)",
             "end)",
-            "$2",
+            "",
         ],
         "description": "Fills up new test boilerplate"
     }
