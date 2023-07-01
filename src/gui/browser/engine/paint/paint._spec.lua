@@ -13,6 +13,7 @@ local Paint = require('src.gui.browser.engine.paint')
 ---@field value string
 ---@field vertical boolean
 ---@field color integer
+---@field backgroundcolor? integer
 
 describe('paint', function()
     local layout = Layout.new()
@@ -68,7 +69,7 @@ describe('paint', function()
     it('Should create a list from nested components', function()
         local parsedComponent = parser.execute({ {
             { 'text', style = { color = colors.primary } },
-            { 'text' },
+            { 'text', style = { backgroundcolor = colors.secondary } },
         } })
         local input = layout.execute(parsedComponent)
 
@@ -88,6 +89,7 @@ describe('paint', function()
                 value = 'text',
                 vertical = false,
                 color = colors.default,
+                backgroundcolor = colors.secondary,
             },
         }
         assert.same(expectedList, result)

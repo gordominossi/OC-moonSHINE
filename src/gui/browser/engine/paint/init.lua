@@ -19,6 +19,7 @@ function Paint.new()
                 value = input.node.value,
                 vertical = false,
                 color = input.style.color,
+                backgroundcolor = input.style.backgroundcolor,
             })
         end
 
