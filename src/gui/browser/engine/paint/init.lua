@@ -18,6 +18,7 @@ function Paint.new()
                 y = input.y,
                 value = input.node.value,
                 vertical = false,
+                color = input.style.color,
             })
         end
 

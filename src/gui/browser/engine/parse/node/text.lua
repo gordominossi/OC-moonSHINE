@@ -10,7 +10,7 @@ local Text = {}
 function Text.new(props)
     props = props or {}
     local _style = merge(
-        { color = colors.white },
+        { color = colors.default },
         props.style or {},
         { display = 'inline' }
     )

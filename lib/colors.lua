@@ -10,5 +10,6 @@ local colors = {
     warning = 0xCCFF66,
     white = 0xFFFFFF,
 }
+colors.default = colors.white
 
 return colors
