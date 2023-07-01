@@ -1,7 +1,7 @@
 local merge = require('lib.language-extensions').mergeTables
 
-local Text = require('src.gui.engine.parse.node.text')
-local Element = require('src.gui.engine.parse.node.element')
+local Text = require('src.gui.browser.engine.parse.node.text')
+local Element = require('src.gui.browser.engine.parse.node.element')
 
 local function mergeStyle(parentComponent, childComponent)
     local style = merge(childComponent.style, parentComponent.style)
@@ -38,8 +38,9 @@ function Parser.new()
 
         if type(componentType) == 'table' then
             componentType = nil
+            ---@type Component
             local childComponent = mergeStyle(component, component[1])
-            local child = self.execute(childComponent --[[@as Component]])
+            local child = self.execute(childComponent)
             table.insert(_children, 1, child)
         end
 

@@ -4,7 +4,7 @@ local spy = _ENV.spy
 local stub = _ENV.stub
 
 local colors = require('lib.colors')
-local Parser = require('src.gui.engine.parse')
+local Parser = require('src.gui.browser.engine.parse')
 
 describe('LuaX parser', function()
     local parser = Parser.new()
