@@ -4,7 +4,7 @@ local Text = require('src.gui.browser.engine.parse.node.text')
 local Element = require('src.gui.browser.engine.parse.node.element')
 
 local function mergeStyle(parentComponent, childComponent)
-    local style = merge(childComponent.style, parentComponent.style)
+    local style = merge(parentComponent.style, childComponent.style)
     return merge(childComponent, { style = style })
 end
 
