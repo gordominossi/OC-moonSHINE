@@ -1,9 +1,9 @@
 local describe = _ENV.describe
 local it = _ENV.it
 
-local List = require('src.modules.moonSHINE.core.list')
+local List = require('src.modules.moonSHINE.core.usecases.list')
 
-describe('Help cli command', function()
+describe('List cli command', function()
     local list = List.new()
 
     local mockPackage = {

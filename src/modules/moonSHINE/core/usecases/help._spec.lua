@@ -1,7 +1,7 @@
 local describe = _ENV.describe
 local it = _ENV.it
 
-local Help = require('src.modules.moonSHINE.core.help')
+local Help = require('modules.moonSHINE.core.usecases.help')
 
 describe('Help cli command', function()
     local help = Help.new()

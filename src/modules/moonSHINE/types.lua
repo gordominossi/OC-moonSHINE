@@ -1,0 +1,12 @@
+---@meta
+
+---@class Package
+---@field author string
+---@field description string
+---@field downloadCount string
+---@field name string
+---@field size string
+---@field url string
+---@field tag string
+---@field updatedAt string
+---@field version string
