@@ -14,22 +14,35 @@ function Layout.new()
     function self.execute(node, parent, previousSibling)
         parent = parent or {}
         previousSibling = previousSibling or {}
+        local props = node.props or {}
         local style = node.props.style or {}
+
+        local margin = {
+            top = style.margin[1] or 0,
+            left = style.margin[2] or style.margin[1] or 0,
+            right = style.margin[3] or style.margin[2] or style.margin[1] or 0,
+            bottom = style.margin[4] or style.margin[1] or 0,
+        }
+
+        local maxWidth = (parent.width or 0) - margin.left - margin.right
+
         local layoutObject = {
             node = node,
             parent = parent,
             previous = previousSibling,
             children = {},
-            width = node.props.width or parent.width or 0,
-            height = node.props.height or parent.height or 0,
-            x = (parent.x or 0) + (previousSibling.x or 0),
-            y = parent.y or 0,
+            width = props.width or maxWidth,
+            height = props.height or parent.height or 0,
+            x = (parent.x or 0) +
+                (previousSibling.x or 0) +
+                (style.margin[2] or style.margin[1] or 0),
+            y = (parent.y or 0) + (style.margin[1] or 0),
             style = style,
         }
 
         if (node.type == 'text') then
             layoutObject.height = 1
-            layoutObject.width = #node.value
+            -- layoutObject.width = #node.value
         end
 
         for i, child in ipairs(node.props.children) do

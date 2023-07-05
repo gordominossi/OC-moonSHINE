@@ -3,6 +3,7 @@ local it = _ENV.it
 
 local colors = require('lib.colors')
 local default = require('lib.default-components')
+local screenSize = require('lib.screen-sizes')
 
 local Layout = require('src.gui.browser.engine.layout')
 local Parser = require('src.gui.browser.engine.parse')
@@ -49,7 +50,7 @@ describe('Layout engine', function()
     describe('block', function()
         ---@type Component
         local fakeComponent = {
-            width=20,
+            width = 20,
             { 'Fake text', style = { color = colors.primary } },
         }
 
@@ -66,6 +67,30 @@ describe('Layout engine', function()
             x = 0,
             y = 0,
         }
+
+        it('should apply margin if defined', function()
+            ---@type Component
+            local testComponent = {
+                width=screenSize.tier3.width,
+                {'text with margin',style= {margin={20,20}}}
+            }
+            
+            local testParsedComponent = parser.execute(testComponent)
+
+            local layedOutComponent = layout.execute(testParsedComponent)
+
+            local expectedPosition = {
+                x = 20,
+                y = 20,
+            }
+
+            local expectedSize = {width=screenSize.tier3.width-40}
+
+            assert.same(expectedPosition.x,layedOutComponent.children[1].x)
+            assert.same(expectedPosition.y,layedOutComponent.children[1].y)
+            assert.same(expectedSize.width,layedOutComponent.children[1].width)
+
+        end)
 
         it('should have a default style', function()
             local input = parser.execute({ type = 'div' })
@@ -97,11 +122,12 @@ describe('Layout engine', function()
             assert.same(
                 merge(
                     fakeBlockLayout,
-                    {style=default.block.style},
+                    { style = default.block.style },
                     { children = { child } }
                 ),
                 result
             )
         end)
+
     end)
 end)
