@@ -13,6 +13,8 @@ function Layout.new()
     ---@return table
     function self.execute(node, parent, previousSibling)
         parent = parent or {}
+        local parentStyle = parent.style or {}
+        local parentPadding = parentStyle.padding or {}
         previousSibling = previousSibling or {}
         local props = node.props or {}
         local style = node.props.style or {}
@@ -24,7 +26,18 @@ function Layout.new()
             bottom = style.margin[4] or style.margin[1] or 0,
         }
 
-        local maxWidth = (parent.width or 0) - margin.left - margin.right
+        local parentPadding = {
+            top = parentPadding[1] or 0,
+            left = parentPadding[2] or parentPadding[1] or 0,
+            right = parentPadding[3] or
+                    parentPadding[2] or
+                    parentPadding[1] or 0,
+            bottom = parentPadding[4] or parentPadding[1] or 0,
+        }
+
+        local maxWidth = (parent.width or 0) -
+                         (margin.left + margin.right) -
+                         (parentPadding.left + parentPadding.right)
 
         local layoutObject = {
             node = node,
@@ -35,14 +48,15 @@ function Layout.new()
             height = props.height or parent.height or 0,
             x = (parent.x or 0) +
                 (previousSibling.x or 0) +
-                (style.margin[2] or style.margin[1] or 0),
-            y = (parent.y or 0) + (style.margin[1] or 0),
+                (margin.left) +
+                (parentPadding.left),
+            y = (parent.y or 0) + (margin.top) + (parentPadding.top),
             style = style,
         }
 
         if (node.type == 'text') then
             layoutObject.height = 1
-            -- layoutObject.width = #node.value
+            layoutObject.width = #node.value
         end
 
         for i, child in ipairs(node.props.children) do

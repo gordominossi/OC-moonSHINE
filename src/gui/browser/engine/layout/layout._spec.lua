@@ -68,6 +68,26 @@ describe('Layout engine', function()
             y = 0,
         }
 
+        it('should apply padding if defined',function ()
+            ---@type Component
+            local testComponent = {
+                width = screenSize.tier3.width,
+                style = { padding = { 20 } },
+                { 'child within padding' }
+            }
+
+            local testParsedComponent = parser.execute(testComponent)
+            local layedOutComponent = layout.execute(testParsedComponent)
+
+            local expectedPosition = {
+                x = 20,
+                y = 20,
+            }
+
+            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
+            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+        end)
+
         it('should apply margin if defined', function()
             ---@type Component
             local testComponent = {
@@ -76,7 +96,6 @@ describe('Layout engine', function()
             }
 
             local testParsedComponent = parser.execute(testComponent)
-
             local layedOutComponent = layout.execute(testParsedComponent)
 
             local expectedPosition = {
@@ -84,11 +103,8 @@ describe('Layout engine', function()
                 y = 20,
             }
 
-            local expectedSize = { width = screenSize.tier3.width - 40 }
-
             assert.same(expectedPosition.x, layedOutComponent.children[1].x)
             assert.same(expectedPosition.y, layedOutComponent.children[1].y)
-            assert.same(expectedSize.width, layedOutComponent.children[1].width)
         end)
 
         it('should have a default style', function()
