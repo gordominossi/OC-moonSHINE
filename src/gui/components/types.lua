@@ -14,7 +14,7 @@
 ---| 'baseline'
 ---| 'inherit'
 
----@alias layoutOptions
+---@alias displayOptions
 ---| 'inline'
 ---| 'block'
 ---| 'inline-block'
@@ -30,8 +30,8 @@
 ---@field backgroundcolor? integer
 ---@field border? boolean
 ---@field color? integer
+---@field display? displayOptions
 ---@field flexdirection? 'row' | 'column'
----@field layout? layoutOptions
 ---@field margin? table
 ---@field padding? table
 ---@field visible? boolean
@@ -65,5 +65,5 @@
 
 ---@class Node
 ---@field type nodeType
----@field value? string
+---@field value? string | number | function | Component
 ---@field props NodeProps

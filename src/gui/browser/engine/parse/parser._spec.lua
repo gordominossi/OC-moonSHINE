@@ -125,7 +125,7 @@ describe('LuaX parser', function()
         end)
 
         it('should inherit style from parent', function()
-            local child = { style = { visibility = 'hidden' } }
+            local child = { style = { visible = false } }
             local parentComponent = {
                 style = { color = 0x123456 },
                 child,
@@ -139,8 +139,8 @@ describe('LuaX parser', function()
                 children[1].props.style.color
             )
             assert.equal(
-                parentComponent[1].style.visibility,
-                children[1].props.style.visibility
+                parentComponent[1].style.visible,
+                children[1].props.style.visible
             )
         end)
 
