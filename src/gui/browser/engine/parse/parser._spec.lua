@@ -29,7 +29,7 @@ describe('LuaX parser', function()
         type = 'div',
         props = {
             children = {},
-            style = { color = colors.background, display = 'block' },
+            style = default.block.style,
         },
     }
 

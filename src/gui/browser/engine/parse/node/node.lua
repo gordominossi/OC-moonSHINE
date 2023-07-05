@@ -1,4 +1,5 @@
 local colors = require('lib.colors')
+local default = require('lib.default-components')
 local merge = require('lib.language-extensions').mergeTables
 
 ---@type Node
@@ -11,10 +12,7 @@ local Node = {}
 function Node.new(type, props, children)
     props = props or {}
     ---@type Style
-    local style = merge(
-        { color = colors.background, display = 'block' },
-        props.style or {}
-    )
+    local style = merge(default.block.style,props.style or {})
 
     ---@type Props
     local _props = merge(

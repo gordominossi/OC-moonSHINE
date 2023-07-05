@@ -40,8 +40,8 @@
 
 ---@class Component : table
 ---@field [1] text | function | Component tag or child
+---@field props Props
 ---@field style? Style
----@field key? string
 ---@field [string] any attribute
 ---@field [number]? text | Component child
 
@@ -60,3 +60,14 @@
 ---@field type nodeTypes
 ---@field value? string | number | function | Component
 ---@field props Props
+
+---@class LayoutObject
+---@field children LayoutObject[]
+---@field height integer
+---@field width integer
+---@field x integer
+---@field y integer
+---@field node Node
+---@field parent LayoutObject
+---@field previous LayoutObject
+---@field style Style

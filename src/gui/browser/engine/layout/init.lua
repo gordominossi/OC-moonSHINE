@@ -6,17 +6,6 @@ function Layout.new()
     ---@class Layout
     local self = {}
 
-    ---@class LayoutObject
-    ---@field children LayoutObject[]
-    ---@field height integer
-    ---@field width integer
-    ---@field x integer
-    ---@field y integer
-    ---@field node Node
-    ---@field parent LayoutObject
-    ---@field previous LayoutObject
-    ---@field style Style
-
     ---comment
     ---@param node Node
     ---@param parent LayoutObject?
@@ -25,14 +14,14 @@ function Layout.new()
     function self.execute(node, parent, previousSibling)
         parent = parent or {}
         previousSibling = previousSibling or {}
-        local style = node.props.style or parent.style or {}
+        local style = node.props.style or {}
         local layoutObject = {
             node = node,
             parent = parent,
             previous = previousSibling,
             children = {},
-            width = parent.width or style.width or 0,
-            height = parent.height or style.height or 0,
+            width = node.props.width or parent.width or 0,
+            height = node.props.height or parent.height or 0,
             x = (parent.x or 0) + (previousSibling.x or 0),
             y = parent.y or 0,
             style = style,

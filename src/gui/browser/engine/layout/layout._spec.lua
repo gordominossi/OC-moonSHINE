@@ -49,7 +49,7 @@ describe('Layout engine', function()
     describe('block', function()
         ---@type Component
         local fakeComponent = {
-            style = { width = 20 },
+            width=20,
             { 'Fake text', style = { color = colors.primary } },
         }
 
@@ -65,11 +65,6 @@ describe('Layout engine', function()
             height = 1,
             x = 0,
             y = 0,
-            style = {
-                color = colors.background,
-                display = 'block',
-                width = 20,
-            },
         }
 
         it('should have a default style', function()
@@ -77,12 +72,7 @@ describe('Layout engine', function()
 
             local result = layout.execute(input)
 
-            local expectedStyle = {
-                display = 'block',
-                color = colors.background,
-            }
-
-            assert.same(expectedStyle, result.style)
+            assert.same(default.block.style, result.style)
         end)
 
         it('should apply custom style if defined', function()
@@ -92,10 +82,10 @@ describe('Layout engine', function()
             })
             local result = layout.execute(input)
 
-            local expectedStyle = {
-                display = 'block',
-                color = colors.primary,
-            }
+            local expectedStyle = merge(
+                default.block.style,
+                { color = colors.primary }
+            )
 
             assert.same(expectedStyle, result.style)
         end)
@@ -105,7 +95,11 @@ describe('Layout engine', function()
 
             local child = merge(result.children[1], { parent = result })
             assert.same(
-                merge(fakeBlockLayout, { children = { child } }),
+                merge(
+                    fakeBlockLayout,
+                    {style=default.block.style},
+                    { children = { child } }
+                ),
                 result
             )
         end)
