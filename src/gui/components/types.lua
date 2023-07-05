@@ -1,5 +1,10 @@
 ---@meta
 
+---@alias nodeType
+---| 'text'
+---| 'div'
+---| 'button'
+
 ---@alias alignOptions
 ---| 'auto'
 ---| 'stretch'
@@ -19,21 +24,17 @@
 ---| 'none'
 
 ---@class Style
----@field display 'block' | 'inline' | 'none'
----@field padding? number
----@field border? number
----@field margin? number
----@field height? number
----@field width? number
----@field layout? layoutOptions
----@field alignself? alignOptions
----@field alignitems? alignOptions
 ---@field aligncontent? alignOptions
----@field flexdirection? 'row' | 'column'
----@field visibility? 'hidden'
+---@field alignitems? alignOptions
+---@field alignself? alignOptions
 ---@field backgroundcolor? integer
----@field visible? boolean
+---@field border? boolean
 ---@field color? integer
+---@field flexdirection? 'row' | 'column'
+---@field layout? layoutOptions
+---@field margin? table
+---@field padding? table
+---@field visible? boolean
 
 ---@alias text string | number
 
@@ -61,3 +62,8 @@
 ---@field value any
 ---@field type string
 ---@field style Style
+
+---@class Node
+---@field type nodeType
+---@field value? string
+---@field props NodeProps

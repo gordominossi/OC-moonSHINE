@@ -27,14 +27,12 @@ function Node.new(type, props, children)
         _props[i] = nil
     end
 
-    local _key, _value
-    _key, _props.key = _props.key, nil
+    local _value
     _value, _props.value = _props.value, nil
 
-    ---@class Node
+    ---@type Node
     local self = {
         type = type,
-        key = _key,
         value = _value,
         props = _props,
     }

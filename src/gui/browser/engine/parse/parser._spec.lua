@@ -11,7 +11,6 @@ describe('LuaX parser', function()
     ---@type Component
     local fakeComponent = {
         'Fake text',
-        key = 'fakeOCAddress',
         style = { color = colors.primary, display = 'block' },
     }
 
