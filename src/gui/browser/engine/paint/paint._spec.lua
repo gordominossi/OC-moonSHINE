@@ -33,6 +33,7 @@ describe('paint', function()
                 value = 'text',
                 vertical = false,
                 color = colors.default,
+                backgroundcolor = colors.background
             }
         }
         assert.same(expectedList, result)
@@ -54,6 +55,7 @@ describe('paint', function()
                 value = 'text',
                 vertical = false,
                 color = colors.default,
+                backgroundcolor = colors.background
             },
             {
                 x = 0,
@@ -61,6 +63,7 @@ describe('paint', function()
                 value = 'text',
                 vertical = false,
                 color = colors.default,
+                backgroundcolor = colors.background
             },
         }
         assert.same(expectedList, result)
@@ -82,6 +85,7 @@ describe('paint', function()
                 value = 'text',
                 vertical = false,
                 color = colors.primary,
+                backgroundcolor = colors.background
             },
             {
                 x = 0,

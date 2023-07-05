@@ -4,6 +4,7 @@ local spy = _ENV.spy
 local stub = _ENV.stub
 
 local colors = require('lib.colors')
+local default = require('lib.default-components')
 local Parser = require('src.gui.browser.engine.parse')
 
 describe('LuaX parser', function()
@@ -11,7 +12,6 @@ describe('LuaX parser', function()
     ---@type Component
     local fakeComponent = {
         'Fake text',
-        style = { color = colors.primary, display = 'block' },
     }
 
     ---@type Node
@@ -21,7 +21,7 @@ describe('LuaX parser', function()
         value = fakeComponent[1],
         props = {
             children = {},
-            style = { color = colors.primary, display = 'inline' },
+            style = default.text.style,
         }
     }
 
@@ -61,10 +61,7 @@ describe('LuaX parser', function()
         it('should have a default `style`', function()
             local result = parser.execute({ 'textGoesHere' })
 
-            assert.same(
-                { color = colors.white, display = 'inline' },
-                result.props.style
-            )
+            assert.same(default.text.style,result.props.style)
         end)
     end)
 

@@ -2,11 +2,12 @@ local describe = _ENV.describe
 local it = _ENV.it
 
 local colors = require('lib.colors')
+local default = require('lib.default-components')
 
 local Layout = require('src.gui.browser.engine.layout')
 local Parser = require('src.gui.browser.engine.parse')
 
-local mergeTables = require('lib.language-extensions').mergeTables
+local merge = require('lib.language-extensions').mergeTables
 
 describe('Layout engine', function()
     local layout = Layout.new()
@@ -15,7 +16,6 @@ describe('Layout engine', function()
     describe('text', function()
         local fakeText = parser.execute({
             'Fake text',
-            style = { color = colors.primary },
         })
 
         ---@type LayoutObject
@@ -28,10 +28,7 @@ describe('Layout engine', function()
             height = 1,
             x = 0,
             y = 0,
-            style = {
-                color = colors.primary,
-                display = 'inline',
-            },
+            style = default.text.style,
         }
 
         it('should layout a text node', function()
@@ -45,9 +42,7 @@ describe('Layout engine', function()
 
             local result = layout.execute(input)
 
-            local expectedStyle = { display = 'inline', color = colors.white }
-
-            assert.same(expectedStyle, result.style)
+            assert.same(default.text.style, result.style)
         end)
     end)
 
@@ -108,9 +103,9 @@ describe('Layout engine', function()
         it('should layout a node with a text node child', function()
             local result = layout.execute(fakeElement)
 
-            local child = mergeTables(result.children[1], { parent = result })
+            local child = merge(result.children[1], { parent = result })
             assert.same(
-                mergeTables(fakeBlockLayout, { children = { child } }),
+                merge(fakeBlockLayout, { children = { child } }),
                 result
             )
         end)
