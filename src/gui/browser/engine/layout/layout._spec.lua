@@ -71,10 +71,10 @@ describe('Layout engine', function()
         it('should apply margin if defined', function()
             ---@type Component
             local testComponent = {
-                width=screenSize.tier3.width,
-                {'text with margin',style= {margin={20,20}}}
+                width = screenSize.tier3.width,
+                { 'text with margin', style = { margin = { 20, 20 } } }
             }
-            
+
             local testParsedComponent = parser.execute(testComponent)
 
             local layedOutComponent = layout.execute(testParsedComponent)
@@ -84,12 +84,11 @@ describe('Layout engine', function()
                 y = 20,
             }
 
-            local expectedSize = {width=screenSize.tier3.width-40}
+            local expectedSize = { width = screenSize.tier3.width - 40 }
 
-            assert.same(expectedPosition.x,layedOutComponent.children[1].x)
-            assert.same(expectedPosition.y,layedOutComponent.children[1].y)
-            assert.same(expectedSize.width,layedOutComponent.children[1].width)
-
+            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
+            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+            assert.same(expectedSize.width, layedOutComponent.children[1].width)
         end)
 
         it('should have a default style', function()
@@ -128,6 +127,5 @@ describe('Layout engine', function()
                 result
             )
         end)
-
     end)
 end)
