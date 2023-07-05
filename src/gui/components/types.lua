@@ -1,6 +1,6 @@
 ---@meta
 
----@alias nodeType
+---@alias nodeTypes
 ---| 'text'
 ---| 'div'
 ---| 'button'
@@ -56,14 +56,7 @@
 ---@field height integer
 ---@field style Style
 
----@class NodeProps : table
----@field children Node[]
----@field key any
----@field value any
----@field type string
----@field style Style
-
 ---@class Node
----@field type nodeType
+---@field type nodeTypes
 ---@field value? string | number | function | Component
----@field props NodeProps
+---@field props Props

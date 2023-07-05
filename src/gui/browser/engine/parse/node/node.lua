@@ -5,7 +5,7 @@ local merge = require('lib.language-extensions').mergeTables
 local Node = {}
 
 ---@param type string
----@param props? NodeProps
+---@param props? Props
 ---@param children? Node[]
 ---@return Node
 function Node.new(type, props, children)
@@ -16,7 +16,7 @@ function Node.new(type, props, children)
         props.style or {}
     )
 
-    ---@type NodeProps
+    ---@type Props
     local _props = merge(
         { children = children or {} },
         props,

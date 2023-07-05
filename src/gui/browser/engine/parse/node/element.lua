@@ -5,7 +5,7 @@ local Node = require('src.gui.browser.engine.parse.node.node')
 ---@type Element
 local Element = {}
 ---@param type? string
----@param props? NodeProps
+---@param props? Props
 ---@param children? Node[]
 ---@return Element
 function Element.new(type, props, children)

@@ -5,7 +5,7 @@ local Node = require('src.gui.browser.engine.parse.node.node')
 
 ---@type Text
 local Text = {}
----@param props? NodeProps
+---@param props? Props
 ---@return Text
 function Text.new(props)
     props = props or {}
