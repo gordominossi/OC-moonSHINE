@@ -30,7 +30,7 @@ function Paint.new()
                 height = input.height,
                 width = input.width,
                 color = input.style.backgroundcolor,
-                backgroundcolor = input.style.backgroundcolor,
+                backgroundcolor = input.style.color,
             })
         end
 
