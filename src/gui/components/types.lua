@@ -28,13 +28,7 @@
 ---@field alignitems? alignOptions
 ---@field alignself? alignOptions
 ---@field backgroundcolor? integer
----@field border? boolean
 ---@field color? integer
----@field display? displayOptions
----@field flexdirection? 'row' | 'column'
----@field margin? table
----@field padding? table
----@field visible? boolean
 
 ---@alias text string | number
 
@@ -50,10 +44,19 @@
 ---@field x number
 ---@field y number
 
+---@class Attributes
+---@field border? boolean
+---@field display? displayOptions
+---@field flexdirection? 'row' | 'column'
+---@field visible? boolean
+
 ---@class Props
 ---@field children Component[]
 ---@field width integer
 ---@field height integer
+---@field margin? table
+---@field padding? table
+---@field attributes Attributes
 ---@field style Style
 
 ---@class Node
@@ -70,7 +73,8 @@
 ---@field node Node
 ---@field parent LayoutObject
 ---@field previous LayoutObject
----@field style Style
+---@field color integer
+---@field backgroundcolor integer
 
 ---@class PaintObject
 ---@field type string
