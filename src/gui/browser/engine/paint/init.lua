@@ -14,11 +14,22 @@ function Paint.new()
 
         if (input.node.type == 'text') then
             table.insert(result, {
+                type = 'set',
                 x = input.x,
                 y = input.y,
                 value = input.node.value,
                 vertical = false,
                 color = input.style.color,
+                backgroundcolor = input.style.backgroundcolor,
+            })
+        elseif (input.node.type == 'div') then
+            table.insert(result, {
+                type = 'fill',
+                x = input.x,
+                y = input.y,
+                height = input.height,
+                width = input.width,
+                color = input.style.backgroundcolor,
                 backgroundcolor = input.style.backgroundcolor,
             })
         end

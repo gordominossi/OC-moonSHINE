@@ -71,3 +71,12 @@
 ---@field parent LayoutObject
 ---@field previous LayoutObject
 ---@field style Style
+
+---@class Paint
+---@field type string
+---@field x integer
+---@field y integer
+---@field value string
+---@field vertical boolean
+---@field color integer
+---@field backgroundcolor integer
