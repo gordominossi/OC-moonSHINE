@@ -43,15 +43,17 @@ function Layout.new()
         if #margin ~= 4 then margin = Standardize(margin) end
 
         local positionOffSet = {
-            x = (margin.left),
-            y = (margin.top),
+            x = (margin.left) + (parent.x or 0),
+            y = (margin.top) + (parent.y or 0),
         }
         if previousSibling.x == nil then
-            positionOffSet.x = positionOffSet.x + (parent.x or 0) + (parentPadding.left)
-            positionOffSet.y = positionOffSet.y + (parent.y or 0) + (parentPadding.top)
+            positionOffSet.x = positionOffSet.x + parentPadding.left
+            positionOffSet.y = positionOffSet.y + parentPadding.top
         else
-            positionOffSet.x = positionOffSet.x + (previousSibling.x or 0)
-            positionOffSet.y = positionOffSet.y + (previousSibling.y or 0) + 1
+            positionOffSet.x = positionOffSet.x + parentPadding.left
+            positionOffSet.y = positionOffSet.y +
+                previousSibling.height +
+                previousSibling.y
         end
 
         local maxWidth = (parent.width or 0) -
@@ -62,7 +64,7 @@ function Layout.new()
         local layoutObject = {
             node = node,
             parent = parent,
-            previous = previousSibling,
+            previous = previousSibling or {},
             children = {},
             width = props.width or maxWidth,
             height = props.height or parent.height or 0,

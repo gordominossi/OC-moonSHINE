@@ -1,4 +1,4 @@
-local describe = _ENV.describe
+ local describe = _ENV.describe
 local it = _ENV.it
 
 local colors = require('lib.colors')
@@ -39,16 +39,20 @@ describe('Layout engine', function()
             assert.same(fakeTextLayout, result)
         end)
 
-        it('should have a default style', function()
+        it('should have default color and backgroundcolor', function()
             local input = parser.execute({ 'text' })
 
             local result = layout.execute(input)
 
-            assert.same(default.text.style, result.node.props.style)
+            assert.same(default.text.style.color, result.color)
+            assert.same(default.text.style.backgroundcolor, result.backgroundcolor)
         end)
     end)
 
     describe('block', function()
+        local defaultBlockColor = default.block.style.color
+        local defaultBlockBackgroundColor = default.block.style.backgroundcolor
+
         ---@type Component
         local fakeComponent = {
             width = 20,
@@ -80,13 +84,13 @@ describe('Layout engine', function()
             }
 
             local testParsedComponent = parser.execute(testComponent)
-            local layedOutComponent = layout.execute(testParsedComponent)
+            local layoutObject = layout.execute(testParsedComponent)
 
             local expectedPosition = {
                 x = { 0, 0, 0 },
                 y = { 0, 1, 2 },
             }
-            for index, child in ipairs(layedOutComponent.children) do
+            for index, child in ipairs(layoutObject.children) do
                 assert.same(expectedPosition.x[index],child.x)
                 assert.same(expectedPosition.y[index],child.y)
             end
@@ -119,6 +123,8 @@ describe('Layout engine', function()
         end)
 
         it('should apply padding if defined', function()
+            local padding = 20
+
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
@@ -129,16 +135,13 @@ describe('Layout engine', function()
             local testParsedComponent = parser.execute(testComponent)
             local layedOutComponent = layout.execute(testParsedComponent)
 
-            local expectedPosition = {
-                x = 20,
-                y = 20,
-            }
-
-            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
-            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+            assert.same(padding, layedOutComponent.children[1].x)
+            assert.same(padding, layedOutComponent.children[1].y)
         end)
 
         it('should apply margin if defined', function()
+            local margin = 20
+
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
@@ -148,36 +151,27 @@ describe('Layout engine', function()
             local testParsedComponent = parser.execute(testComponent)
             local layedOutComponent = layout.execute(testParsedComponent)
 
-            local expectedPosition = {
-                x = 20,
-                y = 20,
-            }
-
-            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
-            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+            assert.same(margin, layedOutComponent.children[1].x)
+            assert.same(margin, layedOutComponent.children[1].y)
         end)
 
-        it('should have a default style', function()
+        it('should have default color and backgroundcolor', function()
             local input = parser.execute({ type = 'div' })
 
             local result = layout.execute(input)
 
-            assert.same(default.block.style, result.node.props.style)
+            assert.same(defaultBlockColor, result.color)
+            assert.same(defaultBlockBackgroundColor, result.backgroundcolor)
         end)
 
-        it('should apply custom style if defined', function()
+        it('should apply custom colors if defined', function()
             local input = parser.execute({
                 type = 'div',
                 style = { color = colors.primary }
             })
             local result = layout.execute(input)
 
-            local expectedStyle = merge(
-                default.block.style,
-                { color = colors.primary }
-            )
-
-            assert.same(expectedStyle, result.node.props.style)
+            assert.same(colors.primary, result.color)
         end)
 
         it('should layout a node with a text node child', function()
@@ -187,6 +181,10 @@ describe('Layout engine', function()
             assert.same(
                 merge(
                     fakeBlockLayout,
+                    {
+                        color = defaultBlockColor,
+                        backgroundcolor = defaultBlockBackgroundColor
+                    },
                     { children = { child } }
                 ),
                 result

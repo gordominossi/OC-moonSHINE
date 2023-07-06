@@ -29,13 +29,17 @@
 ---@field alignself? alignOptions
 ---@field backgroundcolor? integer
 ---@field color? integer
+---@field display? displayOptions
+---@field flexdirection? 'row' | 'column'
+---@field margin { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
+---@field padding { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
+---@field visible? boolean
 
 ---@alias text string | number
 
 ---@class Component : table
 ---@field [1] text | function | Component tag or child
 ---@field props Props
----@field style? Style
 ---@field [string] any attribute
 ---@field [number]? text | Component child
 
