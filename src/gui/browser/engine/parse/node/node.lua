@@ -12,27 +12,27 @@ local Node = {}
 function Node.new(type, props, children)
     props = props or {}
     ---@type Style
-    local style = merge(default.block.style,props.style or {})
+    local style = merge(default.block.style, props.style)
 
     ---@type Props
-    local _props = merge(
+    local nodeProps = merge(
         { children = children or {} },
         props,
         { style = style }
     )
-    _props.type = nil
-    for i = 1, #_props do
-        _props[i] = nil
+    nodeProps.type = nil
+    for i = 1, #nodeProps do
+        nodeProps[i] = nil
     end
 
-    local _value
-    _value, _props.value = _props.value, nil
+    local value
+    value, nodeProps.value = nodeProps.value, nil
 
     ---@type Node
     local self = {
         type = type,
-        value = _value,
-        props = _props,
+        value = value,
+        props = nodeProps,
     }
 
     return self
