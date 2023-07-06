@@ -1,4 +1,3 @@
-local colors = require('lib.colors')
 local default = require('lib.default-components')
 local merge = require('lib.language-extensions').mergeTables
 
@@ -10,7 +9,7 @@ local Text = {}
 ---@return Text
 function Text.new(props)
     props = props or {}
-    local _style = merge(default.text.style,props.style or {})
+    local _style = merge(default.text.style, props.style)
     local _props = merge(props, { style = _style })
 
     ---@class Text : Node

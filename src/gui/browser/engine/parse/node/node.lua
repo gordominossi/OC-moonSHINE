@@ -1,4 +1,3 @@
-local colors = require('lib.colors')
 local default = require('lib.default-components')
 local merge = require('lib.language-extensions').mergeTables
 
