@@ -10,8 +10,35 @@ local Node = {}
 ---@return Node
 function Node.new(type, props, children)
     props = props or {}
-    ---@type Style
-    local style = merge(default.block.style, props.style)
+    local propsStyle = props.style or {}
+    local propsMargin = propsStyle.margin or {}
+    local propsPadding = propsStyle.padding or {}
+
+    local margin = {
+        top = propsMargin.top or propsMargin[1] or 0,
+        left = propsMargin.left or propsMargin[2] or propsMargin[1] or 0,
+        right = propsMargin.right or
+            propsMargin[3] or
+            propsMargin[2] or
+            propsMargin[1] or 0,
+        bottom = propsMargin.bottom or propsMargin[4] or propsMargin[1] or 0,
+    }
+
+    local padding = {
+        top = propsPadding.top or propsPadding[1] or 0,
+        left = propsPadding.left or propsPadding[2] or propsPadding[1] or 0,
+        right = propsPadding.right or
+            propsPadding[3] or
+            propsPadding[2] or
+            propsPadding[1] or 0,
+        bottom = propsPadding.bottom or propsPadding[4] or propsPadding[1] or 0,
+    }
+
+    local style = merge(
+        default.block.style,
+        propsStyle,
+        { padding = padding, margin = margin }
+    )
 
     ---@type Props
     local nodeProps = merge(

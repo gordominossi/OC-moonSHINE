@@ -14,37 +14,24 @@ function Layout.new()
     function self.execute(node, parent, previousSibling)
         parent = parent or {}
         local parentStyle = parent.node and parent.node.props.style or {}
-        local parentPadding = parentStyle.padding or {}
-        previousSibling = previousSibling or {}
-        local props = node.props or {}
-        local style = node.props.style or {}
+        local parentPadding = parentStyle.padding or
+            { top = 0, right = 0, bottom = 0, left = 0 }
 
-        local margin = {
-            top = style.margin[1] or 0,
-            left = style.margin[2] or style.margin[1] or 0,
-            right = style.margin[3] or style.margin[2] or style.margin[1] or 0,
-            bottom = style.margin[4] or style.margin[1] or 0,
-        }
+        local props = node.props
+        local style = node.props.style
+        local margin = style.margin
 
-        parentPadding = {
-            top = parentPadding[1] or 0,
-            left = parentPadding[2] or parentPadding[1] or 0,
-            right = parentPadding[3] or
-                parentPadding[2] or
-                parentPadding[1] or 0,
-            bottom = parentPadding[4] or parentPadding[1] or 0,
-        }
-
-        local positionOffSet = {
-            x = (margin.left),
-            y = (margin.top),
-        }
-        if previousSibling.x == nil then
-            positionOffSet.x = positionOffSet.x + (parent.x or 0) + (parentPadding.left)
-            positionOffSet.y = positionOffSet.y + (parent.y or 0) + (parentPadding.top)
+        local positionOffset = { x = margin.left, y = margin.top }
+        if previousSibling then
+            positionOffset.x = positionOffset.x + previousSibling.x
+            positionOffset.y = positionOffset.y + previousSibling.y + 1
         else
-            positionOffSet.x = positionOffSet.x + (previousSibling.x or 0)
-            positionOffSet.y = positionOffSet.y + (previousSibling.y or 0) + 1
+            positionOffset.x = positionOffset.x +
+                (parent.x or 0) +
+                parentPadding.left
+            positionOffset.y = positionOffset.y +
+                (parent.y or 0) +
+                parentPadding.top
         end
 
         local maxWidth = (parent.width or 0) -
@@ -54,12 +41,12 @@ function Layout.new()
         local layoutObject = {
             node = node,
             parent = parent,
-            previous = previousSibling,
+            previous = previousSibling or {},
             children = {},
             width = props.width or maxWidth,
             height = props.height or parent.height or 0,
-            x = positionOffSet.x,
-            y = positionOffSet.y,
+            x = positionOffset.x,
+            y = positionOffset.y,
             color = style.color,
             backgroundcolor = style.backgroundcolor,
         }

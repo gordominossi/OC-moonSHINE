@@ -83,6 +83,44 @@ describe('LuaX parser', function()
                 assert.equal(spyComponent.text, result.value)
             end
         )
+
+        it('should have padding on all sides', function()
+            local parentComponent = {
+                style = { padding = { 1 } },
+            }
+
+
+            local result = parser.execute(parentComponent)
+
+            assert.same(
+                {
+                    top = 1,
+                    right = 1,
+                    bottom = 1,
+                    left = 1,
+                },
+                result.props.style.padding
+            )
+        end)
+
+        it('should have margin on all sides', function()
+            local parentComponent = {
+                style = { margin = { 1 } },
+            }
+
+
+            local result = parser.execute(parentComponent)
+
+            assert.same(
+                {
+                    top = 1,
+                    right = 1,
+                    bottom = 1,
+                    left = 1,
+                },
+                result.props.style.margin
+            )
+        end)
     end)
 
     describe('children', function()
