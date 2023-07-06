@@ -1,9 +1,8 @@
-
 local colors = require('lib.colors')
 local merge = require('lib.language-extensions').mergeTables
 
 ---@type Style
-local defaulStyle = {
+local defaultStyle = {
     aligncontent = 'auto',
     alignitems = 'auto',
     alignself = 'auto',
@@ -12,18 +11,14 @@ local defaulStyle = {
     color = colors.default,
     flexdirection = 'column',
     display = 'inline',
-    margin = {0},
-    padding = {0},
+    margin = { 0 },
+    padding = { 0 },
     visible = true,
 }
 
-
-
 local defaultLayout = {
-    text = {
-        style = defaulStyle},
-    block = {
-        style = merge(defaulStyle,{display='block'})},
+    text = { style = defaultStyle },
+    block = { style = merge(defaultStyle, { display = 'block' }) },
 }
 
 return defaultLayout

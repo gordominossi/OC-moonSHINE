@@ -37,7 +37,7 @@ function Paint.new()
         for _, child in ipairs(input.children) do
             local childList = self.execute(child)
             for _, paintObject in ipairs(childList) do
-                table.insert(result,paintObject)
+                table.insert(result, paintObject)
             end
         end
 

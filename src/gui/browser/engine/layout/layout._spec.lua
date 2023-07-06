@@ -78,17 +78,17 @@ describe('Layout engine', function()
 
             local testParsedComponent = parser.execute(testComponent)
             local layedOutComponent = layout.execute(testParsedComponent)
-            
+
             local expectedPosition = {
-                x={0,0,0},
-                y={0,1,2},
+                x = { 0, 0, 0 },
+                y = { 0, 1, 2 },
             }
-            assert.same(expectedPosition.x[1],layedOutComponent.children[1].x)
-            assert.same(expectedPosition.x[2],layedOutComponent.children[2].x)
-            assert.same(expectedPosition.x[3],layedOutComponent.children[3].x)
-            assert.same(expectedPosition.y[1],layedOutComponent.children[1].y)
-            assert.same(expectedPosition.y[2],layedOutComponent.children[2].y)
-            assert.same(expectedPosition.y[3],layedOutComponent.children[3].y)
+            assert.same(expectedPosition.x[1], layedOutComponent.children[1].x)
+            assert.same(expectedPosition.x[2], layedOutComponent.children[2].x)
+            assert.same(expectedPosition.x[3], layedOutComponent.children[3].x)
+            assert.same(expectedPosition.y[1], layedOutComponent.children[1].y)
+            assert.same(expectedPosition.y[2], layedOutComponent.children[2].y)
+            assert.same(expectedPosition.y[3], layedOutComponent.children[3].y)
         end)
 
         it('should list children when paddin is applied to parent', function()
@@ -96,8 +96,9 @@ describe('Layout engine', function()
             local testComponent = {
                 width = screenSize.tier3.width,
                 height = screenSize.tier3.height,
-                style = { padding = { 10,10 },
-                        backgroundcolor=colors.border,
+                style = {
+                    padding = { 10, 10 },
+                    backgroundcolor = colors.border,
                 },
                 { 'child within padding' },
                 { 'another child within padding, 1 row below' },
@@ -105,15 +106,15 @@ describe('Layout engine', function()
 
             local testParsedComponent = parser.execute(testComponent)
             local layedOutComponent = layout.execute(testParsedComponent)
-            
+
             local expectedPosition = {
-                x={10,10},
-                y={10,11},
+                x = { 10, 10 },
+                y = { 10, 11 },
             }
-            assert.same(expectedPosition.x[1],layedOutComponent.children[1].x)
-            assert.same(expectedPosition.x[2],layedOutComponent.children[2].x)
-            assert.same(expectedPosition.y[1],layedOutComponent.children[1].y)
-            assert.same(expectedPosition.y[2],layedOutComponent.children[2].y)
+            assert.same(expectedPosition.x[1], layedOutComponent.children[1].x)
+            assert.same(expectedPosition.x[2], layedOutComponent.children[2].x)
+            assert.same(expectedPosition.y[1], layedOutComponent.children[1].y)
+            assert.same(expectedPosition.y[2], layedOutComponent.children[2].y)
         end)
 
         it('should apply padding if defined', function()
