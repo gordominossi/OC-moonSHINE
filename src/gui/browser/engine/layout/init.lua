@@ -26,7 +26,7 @@ function Layout.new()
             bottom = style.margin[4] or style.margin[1] or 0,
         }
 
-        local parentPadding = {
+        parentPadding = {
             top = parentPadding[1] or 0,
             left = parentPadding[2] or parentPadding[1] or 0,
             right = parentPadding[3] or
