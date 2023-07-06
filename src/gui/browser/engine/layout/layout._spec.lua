@@ -29,7 +29,8 @@ describe('Layout engine', function()
             height = 1,
             x = 0,
             y = 0,
-            style = default.text.style,
+            color = colors.default,
+            backgroundcolor = colors.background,
         }
 
         it('should layout a text node', function()
@@ -43,7 +44,7 @@ describe('Layout engine', function()
 
             local result = layout.execute(input)
 
-            assert.same(default.text.style, result.style)
+            assert.same(default.text.style, result.node.props.style)
         end)
     end)
 
@@ -66,6 +67,8 @@ describe('Layout engine', function()
             height = 1,
             x = 0,
             y = 0,
+            color = colors.default,
+            backgroundcolor = colors.background,
         }
 
         it('should list children', function()
@@ -83,12 +86,10 @@ describe('Layout engine', function()
                 x = { 0, 0, 0 },
                 y = { 0, 1, 2 },
             }
-            assert.same(expectedPosition.x[1], layedOutComponent.children[1].x)
-            assert.same(expectedPosition.x[2], layedOutComponent.children[2].x)
-            assert.same(expectedPosition.x[3], layedOutComponent.children[3].x)
-            assert.same(expectedPosition.y[1], layedOutComponent.children[1].y)
-            assert.same(expectedPosition.y[2], layedOutComponent.children[2].y)
-            assert.same(expectedPosition.y[3], layedOutComponent.children[3].y)
+            for index, child in ipairs(layedOutComponent.children) do
+                assert.same(expectedPosition.x[index],child.x)
+                assert.same(expectedPosition.y[index],child.y)
+            end
         end)
 
         it('should list children when paddin is applied to parent', function()
@@ -96,8 +97,8 @@ describe('Layout engine', function()
             local testComponent = {
                 width = screenSize.tier3.width,
                 height = screenSize.tier3.height,
+                padding = { 10, 10 },
                 style = {
-                    padding = { 10, 10 },
                     backgroundcolor = colors.border,
                 },
                 { 'child within padding' },
@@ -111,17 +112,17 @@ describe('Layout engine', function()
                 x = { 10, 10 },
                 y = { 10, 11 },
             }
-            assert.same(expectedPosition.x[1], layedOutComponent.children[1].x)
-            assert.same(expectedPosition.x[2], layedOutComponent.children[2].x)
-            assert.same(expectedPosition.y[1], layedOutComponent.children[1].y)
-            assert.same(expectedPosition.y[2], layedOutComponent.children[2].y)
+            for index, child in ipairs(layedOutComponent.children) do
+                assert.same(expectedPosition.x[index],child.x)
+                assert.same(expectedPosition.y[index],child.y)
+            end
         end)
 
         it('should apply padding if defined', function()
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
-                style = { padding = { 20 } },
+                padding = { 20 },
                 { 'child within padding' }
             }
 
@@ -141,7 +142,7 @@ describe('Layout engine', function()
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
-                { 'text with margin', style = { margin = { 20, 20 } } }
+                { 'text with margin', margin = { 20, 20 } }
             }
 
             local testParsedComponent = parser.execute(testComponent)
@@ -161,7 +162,7 @@ describe('Layout engine', function()
 
             local result = layout.execute(input)
 
-            assert.same(default.block.style, result.style)
+            assert.same(default.block.style, result.node.props.style)
         end)
 
         it('should apply custom style if defined', function()
@@ -176,7 +177,7 @@ describe('Layout engine', function()
                 { color = colors.primary }
             )
 
-            assert.same(expectedStyle, result.style)
+            assert.same(expectedStyle, result.node.props.style)
         end)
 
         it('should layout a node with a text node child', function()
@@ -186,7 +187,6 @@ describe('Layout engine', function()
             assert.same(
                 merge(
                     fakeBlockLayout,
-                    { style = default.block.style },
                     { children = { child } }
                 ),
                 result

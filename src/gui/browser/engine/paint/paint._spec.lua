@@ -49,7 +49,7 @@ describe('paint', function()
                     y = 0,
                     width = 0,
                     height = 2,
-                    backgroundcolor = colors.background,
+                    backgroundcolor = colors.default,
                     color = colors.background,
                 },
                 {
@@ -90,7 +90,7 @@ describe('paint', function()
                     y = 0,
                     width = 0,
                     height = 2,
-                    backgroundcolor = colors.background,
+                    backgroundcolor = colors.default,
                     color = colors.background,
                 },
                 {
@@ -99,7 +99,7 @@ describe('paint', function()
                     y = 0,
                     width = 0,
                     height = 2,
-                    backgroundcolor = colors.background,
+                    backgroundcolor = colors.default,
                     color = colors.background,
                 },
                 {
@@ -147,7 +147,7 @@ describe('paint', function()
                     y = 0,
                     width = 5,
                     height = 5,
-                    backgroundcolor = colors.background,
+                    backgroundcolor = colors.info,
                     color = colors.background,
                 }
             }
@@ -173,7 +173,7 @@ describe('paint', function()
                     y = 0,
                     width = 80,
                     height = 42,
-                    backgroundcolor = colors.background,
+                    backgroundcolor = colors.default,
                     color = colors.background,
                 },
                 {

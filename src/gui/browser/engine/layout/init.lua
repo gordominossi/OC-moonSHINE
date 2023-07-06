@@ -1,6 +1,22 @@
 ---@type Layout
 local Layout = {}
 
+function Standardize(property)
+    if property == { 0 } then
+        property = { top = 0, left = 0, right = 0, bottom = 0 }
+    else
+        property = {
+            top = property[1],
+            left = property[2] or property[1],
+            right = property[3] or
+                property[2] or
+                property[1],
+            bottom = property[4] or property[1],
+        }
+    end
+    return property
+end
+
 ---@return Layout
 function Layout.new()
     ---@class Layout
@@ -13,27 +29,18 @@ function Layout.new()
     ---@return table
     function self.execute(node, parent, previousSibling)
         parent = parent or {}
-        local parentStyle = parent.style or {}
-        local parentPadding = parentStyle.padding or {}
         previousSibling = previousSibling or {}
+
+        local parentNode = parent.node or {}
+        local parentProps = parentNode.props or {}
+        local parentPadding = parentProps.padding or { 0 }
+        if #parentPadding ~= 4 then
+            parentPadding = Standardize(parentPadding)
+        end
+
         local props = node.props or {}
-        local style = node.props.style or {}
-
-        local margin = {
-            top = style.margin[1] or 0,
-            left = style.margin[2] or style.margin[1] or 0,
-            right = style.margin[3] or style.margin[2] or style.margin[1] or 0,
-            bottom = style.margin[4] or style.margin[1] or 0,
-        }
-
-        local parentPadding = {
-            top = parentPadding[1] or 0,
-            left = parentPadding[2] or parentPadding[1] or 0,
-            right = parentPadding[3] or
-                parentPadding[2] or
-                parentPadding[1] or 0,
-            bottom = parentPadding[4] or parentPadding[1] or 0,
-        }
+        local margin = props.margin or { 0 }
+        if #margin ~= 4 then margin = Standardize(margin) end
 
         local positionOffSet = {
             x = (margin.left),
@@ -51,6 +58,7 @@ function Layout.new()
             (margin.left + margin.right) -
             (parentPadding.left + parentPadding.right)
 
+        local style = node.props.style or {}
         local layoutObject = {
             node = node,
             parent = parent,
@@ -60,7 +68,8 @@ function Layout.new()
             height = props.height or parent.height or 0,
             x = positionOffSet.x,
             y = positionOffSet.y,
-            style = style,
+            color = style.color,
+            backgroundcolor = style.backgroundcolor,
         }
 
         if (node.type == 'text') then
