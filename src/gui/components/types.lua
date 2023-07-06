@@ -72,10 +72,12 @@
 ---@field previous LayoutObject
 ---@field style Style
 
----@class Paint
+---@class PaintObject
 ---@field type string
 ---@field x integer
 ---@field y integer
+---@field height integer
+---@field width integer
 ---@field value string
 ---@field vertical boolean
 ---@field color integer

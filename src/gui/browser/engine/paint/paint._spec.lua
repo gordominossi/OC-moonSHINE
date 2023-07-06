@@ -7,14 +7,6 @@ local Layout = require('src.gui.browser.engine.layout')
 local Parser = require('src.gui.browser.engine.parse')
 local Paint = require('src.gui.browser.engine.paint')
 
----@class PaintObject
----@field x integer
----@field y integer
----@field value string
----@field vertical boolean
----@field color integer
----@field backgroundcolor? integer
-
 describe('paint', function()
     local layout = Layout.new()
     local parser = Parser.new()
