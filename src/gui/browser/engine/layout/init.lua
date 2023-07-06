@@ -30,28 +30,26 @@ function Layout.new()
             top = parentPadding[1] or 0,
             left = parentPadding[2] or parentPadding[1] or 0,
             right = parentPadding[3] or
-                    parentPadding[2] or
-                    parentPadding[1] or 0,
+                parentPadding[2] or
+                parentPadding[1] or 0,
             bottom = parentPadding[4] or parentPadding[1] or 0,
         }
 
-        local maxWidth = (parent.width or 0) -
-                         (margin.left + margin.right) -
-                         (parentPadding.left + parentPadding.right)
-
         local positionOffSet = {
-            x = (parent.x or 0) +
-                (margin.left) +
-                (parentPadding.left),
-            y = (parent.y or 0) +
-                (margin.top) +
-                (parentPadding.top) +
-                (previousSibling.y or 0),
+            x = (margin.left),
+            y = (margin.top),
         }
-
-        if previousSibling.y==positionOffSet.y then
-            positionOffSet.y=positionOffSet.y+1
+        if previousSibling.x == nil then
+            positionOffSet.x = positionOffSet.x + (parent.x or 0) + (parentPadding.left)
+            positionOffSet.y = positionOffSet.y + (parent.y or 0) + (parentPadding.top)
+        else
+            positionOffSet.x = positionOffSet.x + (previousSibling.x or 0)
+            positionOffSet.y = positionOffSet.y + (previousSibling.y or 0) + 1
         end
+
+        local maxWidth = (parent.width or 0) -
+            (margin.left + margin.right) -
+            (parentPadding.left + parentPadding.right)
 
         local layoutObject = {
             node = node,
