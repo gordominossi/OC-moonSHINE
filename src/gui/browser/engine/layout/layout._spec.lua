@@ -68,7 +68,30 @@ describe('Layout engine', function()
             y = 0,
         }
 
-        it('should apply padding if defined',function ()
+        it('should list children', function()
+            ---@type Component
+            local testComponent = {
+                { 'child 1' },
+                { 'child 2' },
+                { 'child 3' },
+            }
+
+            local testParsedComponent = parser.execute(testComponent)
+            local layedOutComponent = layout.execute(testParsedComponent)
+            
+            local expectedPosition = {
+                x={0,0,0},
+                y={0,1,2},
+            }
+            assert.same(expectedPosition.x[1],layedOutComponent.children[1].x)
+            assert.same(expectedPosition.x[2],layedOutComponent.children[2].x)
+            assert.same(expectedPosition.x[3],layedOutComponent.children[3].x)
+            assert.same(expectedPosition.y[1],layedOutComponent.children[1].y)
+            assert.same(expectedPosition.y[2],layedOutComponent.children[2].y)
+            assert.same(expectedPosition.y[3],layedOutComponent.children[3].y)
+        end)
+
+        it('should apply padding if defined', function()
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,

@@ -59,7 +59,7 @@ describe('paint', function()
             },
             {
                 x = 0,
-                y = 0,
+                y = 1,
                 value = 'text',
                 vertical = false,
                 color = colors.default,
@@ -89,7 +89,7 @@ describe('paint', function()
             },
             {
                 x = 0,
-                y = 0,
+                y = 1,
                 value = 'text',
                 vertical = false,
                 color = colors.default,

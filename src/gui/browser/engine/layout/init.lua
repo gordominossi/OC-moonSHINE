@@ -39,6 +39,20 @@ function Layout.new()
                          (margin.left + margin.right) -
                          (parentPadding.left + parentPadding.right)
 
+        local positionOffSet = {
+            x = (parent.x or 0) +
+                (margin.left) +
+                (parentPadding.left),
+            y = (parent.y or 0) +
+                (margin.top) +
+                (parentPadding.top) +
+                (previousSibling.y or 0),
+        }
+
+        if previousSibling.y==positionOffSet.y then
+            positionOffSet.y=positionOffSet.y+1
+        end
+
         local layoutObject = {
             node = node,
             parent = parent,
@@ -46,11 +60,8 @@ function Layout.new()
             children = {},
             width = props.width or maxWidth,
             height = props.height or parent.height or 0,
-            x = (parent.x or 0) +
-                (previousSibling.x or 0) +
-                (margin.left) +
-                (parentPadding.left),
-            y = (parent.y or 0) + (margin.top) + (parentPadding.top),
+            x = positionOffSet.x,
+            y = positionOffSet.y,
             style = style,
         }
 
