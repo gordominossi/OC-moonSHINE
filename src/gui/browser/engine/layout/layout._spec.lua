@@ -29,7 +29,8 @@ describe('Layout engine', function()
             height = 1,
             x = 0,
             y = 0,
-            style = default.text.style,
+            backgroundcolor = colors.background,
+            color = colors.default,
         }
 
         it('should layout a text node', function()
@@ -38,16 +39,20 @@ describe('Layout engine', function()
             assert.same(fakeTextLayout, result)
         end)
 
-        it('should have a default style', function()
+        it('should have default color and backgroundcolor', function()
             local input = parser.execute({ 'text' })
 
             local result = layout.execute(input)
 
-            assert.same(default.text.style, result.style)
+            assert.same(default.text.style.color, result.color)
+            assert.same(default.text.style.backgroundcolor, result.backgroundcolor)
         end)
     end)
 
     describe('block', function()
+        local defaultBlockColor = default.block.style.color
+        local defaultBlockBackgroundColor = default.block.style.backgroundcolor
+
         ---@type Component
         local fakeComponent = {
             width = 20,
@@ -156,27 +161,23 @@ describe('Layout engine', function()
             assert.same(expectedPosition.y, layedOutComponent.children[1].y)
         end)
 
-        it('should have a default style', function()
+        it('should have default color and backgroundcolor', function()
             local input = parser.execute({ type = 'div' })
 
             local result = layout.execute(input)
 
-            assert.same(default.block.style, result.style)
+            assert.same(defaultBlockColor, result.color)
+            assert.same(defaultBlockBackgroundColor, result.backgroundcolor)
         end)
 
-        it('should apply custom style if defined', function()
+        it('should apply custom colors if defined', function()
             local input = parser.execute({
                 type = 'div',
                 style = { color = colors.primary }
             })
             local result = layout.execute(input)
 
-            local expectedStyle = merge(
-                default.block.style,
-                { color = colors.primary }
-            )
-
-            assert.same(expectedStyle, result.style)
+            assert.same(colors.primary, result.color)
         end)
 
         it('should layout a node with a text node child', function()
@@ -186,7 +187,10 @@ describe('Layout engine', function()
             assert.same(
                 merge(
                     fakeBlockLayout,
-                    { style = default.block.style },
+                    {
+                        color = defaultBlockColor,
+                        backgroundcolor = defaultBlockBackgroundColor
+                    },
                     { children = { child } }
                 ),
                 result

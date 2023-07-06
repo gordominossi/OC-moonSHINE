@@ -13,7 +13,7 @@ function Layout.new()
     ---@return table
     function self.execute(node, parent, previousSibling)
         parent = parent or {}
-        local parentStyle = parent.style or {}
+        local parentStyle = parent.node and parent.node.props.style or {}
         local parentPadding = parentStyle.padding or {}
         previousSibling = previousSibling or {}
         local props = node.props or {}
@@ -60,7 +60,8 @@ function Layout.new()
             height = props.height or parent.height or 0,
             x = positionOffSet.x,
             y = positionOffSet.y,
-            style = style,
+            color = style.color,
+            backgroundcolor = style.backgroundcolor,
         }
 
         if (node.type == 'text') then

@@ -70,7 +70,8 @@
 ---@field node Node
 ---@field parent LayoutObject
 ---@field previous LayoutObject
----@field style Style
+---@field color integer
+---@field backgroundcolor integer
 
 ---@class PaintObject
 ---@field type string

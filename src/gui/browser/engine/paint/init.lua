@@ -19,8 +19,8 @@ function Paint.new()
                 y = input.y,
                 value = input.node.value,
                 vertical = false,
-                color = input.style.color,
-                backgroundcolor = input.style.backgroundcolor,
+                color = input.color,
+                backgroundcolor = input.backgroundcolor,
             })
         elseif (input.node.type == 'div') then
             table.insert(result, {
@@ -29,8 +29,8 @@ function Paint.new()
                 y = input.y,
                 height = input.height,
                 width = input.width,
-                color = input.style.backgroundcolor,
-                backgroundcolor = input.style.backgroundcolor,
+                color = input.backgroundcolor,
+                backgroundcolor = input.backgroundcolor,
             })
         end
 
