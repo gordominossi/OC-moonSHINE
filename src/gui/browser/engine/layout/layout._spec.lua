@@ -82,18 +82,14 @@ describe('Layout engine', function()
             }
 
             local testParsedComponent = parser.execute(testComponent)
-            local layedOutComponent = layout.execute(testParsedComponent)
+            local layoutObject = layout.execute(testParsedComponent)
 
-            local expectedPosition = {
-                x = { 0, 0, 0 },
-                y = { 0, 1, 2 },
-            }
-            assert.same(expectedPosition.x[1], layedOutComponent.children[1].x)
-            assert.same(expectedPosition.x[2], layedOutComponent.children[2].x)
-            assert.same(expectedPosition.x[3], layedOutComponent.children[3].x)
-            assert.same(expectedPosition.y[1], layedOutComponent.children[1].y)
-            assert.same(expectedPosition.y[2], layedOutComponent.children[2].y)
-            assert.same(expectedPosition.y[3], layedOutComponent.children[3].y)
+            assert.same(0, layoutObject.children[1].x)
+            assert.same(0, layoutObject.children[2].x)
+            assert.same(0, layoutObject.children[3].x)
+            assert.same(0, layoutObject.children[1].y)
+            assert.same(1, layoutObject.children[2].y)
+            assert.same(2, layoutObject.children[3].y)
         end)
 
         it('should list children when paddin is applied to parent', function()
@@ -123,42 +119,36 @@ describe('Layout engine', function()
         end)
 
         it('should apply padding if defined', function()
+            local padding = 20
+
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
-                style = { padding = { 20 } },
+                style = { padding = { padding } },
                 { 'child within padding' }
             }
 
             local testParsedComponent = parser.execute(testComponent)
             local layedOutComponent = layout.execute(testParsedComponent)
 
-            local expectedPosition = {
-                x = 20,
-                y = 20,
-            }
-
-            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
-            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+            assert.same(padding, layedOutComponent.children[1].x)
+            assert.same(padding, layedOutComponent.children[1].y)
         end)
 
         it('should apply margin if defined', function()
+            local margin = 20
+
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
-                { 'text with margin', style = { margin = { 20, 20 } } }
+                { 'text with margin', style = { margin = { margin } } }
             }
 
             local testParsedComponent = parser.execute(testComponent)
             local layedOutComponent = layout.execute(testParsedComponent)
 
-            local expectedPosition = {
-                x = 20,
-                y = 20,
-            }
-
-            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
-            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+            assert.same(margin, layedOutComponent.children[1].x)
+            assert.same(margin, layedOutComponent.children[1].y)
         end)
 
         it('should have default color and backgroundcolor', function()
