@@ -29,45 +29,40 @@ function Layout.new()
     ---@return table
     function self.execute(node, parent, previousSibling)
         parent = parent or {}
-        previousSibling = previousSibling or {}
+        local parentStyle = parent.node and parent.node.props.style or {}
+        local parentPadding = parentStyle.padding or
+            { top = 0, right = 0, bottom = 0, left = 0 }
 
-        local parentNode = parent.node or {}
-        local parentProps = parentNode.props or {}
-        local parentPadding = parentProps.padding or { 0 }
-        if #parentPadding ~= 4 then
-            parentPadding = Standardize(parentPadding)
-        end
+        local props = node.props
+        local style = node.props.style
+        local margin = style.margin
 
-        local props = node.props or {}
-        local margin = props.margin or { 0 }
-        if #margin ~= 4 then margin = Standardize(margin) end
-
-        local positionOffSet = {
-            x = (margin.left),
-            y = (margin.top),
-        }
-        if previousSibling.x == nil then
-            positionOffSet.x = positionOffSet.x + (parent.x or 0) + (parentPadding.left)
-            positionOffSet.y = positionOffSet.y + (parent.y or 0) + (parentPadding.top)
+        local positionOffset = { x = margin.left, y = margin.top }
+        if previousSibling then
+            positionOffset.x = positionOffset.x + previousSibling.x
+            positionOffset.y = positionOffset.y + previousSibling.y + 1
         else
-            positionOffSet.x = positionOffSet.x + (previousSibling.x or 0)
-            positionOffSet.y = positionOffSet.y + (previousSibling.y or 0) + 1
+            positionOffset.x = positionOffset.x +
+                (parent.x or 0) +
+                parentPadding.left
+            positionOffset.y = positionOffset.y +
+                (parent.y or 0) +
+                parentPadding.top
         end
 
         local maxWidth = (parent.width or 0) -
             (margin.left + margin.right) -
             (parentPadding.left + parentPadding.right)
 
-        local style = node.props.style or {}
         local layoutObject = {
             node = node,
             parent = parent,
-            previous = previousSibling,
+            previous = previousSibling or {},
             children = {},
             width = props.width or maxWidth,
             height = props.height or parent.height or 0,
-            x = positionOffSet.x,
-            y = positionOffSet.y,
+            x = positionOffset.x,
+            y = positionOffset.y,
             color = style.color,
             backgroundcolor = style.backgroundcolor,
         }

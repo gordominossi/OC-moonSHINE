@@ -9,6 +9,7 @@ local Layout = require('src.gui.browser.engine.layout')
 local Parser = require('src.gui.browser.engine.parse')
 
 local merge = require('lib.language-extensions').mergeTables
+local traverseBreadthFirst = require('lib.language-extensions').traverseBreadthFirst
 
 describe('Layout engine', function()
     local layout = Layout.new()
@@ -39,16 +40,20 @@ describe('Layout engine', function()
             assert.same(fakeTextLayout, result)
         end)
 
-        it('should have a default style', function()
+        it('should have default color and backgroundcolor', function()
             local input = parser.execute({ 'text' })
 
             local result = layout.execute(input)
 
-            assert.same(default.text.style, result.node.props.style)
+            assert.same(default.text.style.color, result.color)
+            assert.same(default.text.style.backgroundcolor, result.backgroundcolor)
         end)
     end)
 
     describe('block', function()
+        local defaultBlockColor = default.block.style.color
+        local defaultBlockBackgroundColor = default.block.style.backgroundcolor
+
         ---@type Component
         local fakeComponent = {
             width = 20,
@@ -79,85 +84,72 @@ describe('Layout engine', function()
                 { 'child 3' },
             }
 
-            local testParsedComponent = parser.execute(testComponent)
-            local layedOutComponent = layout.execute(testParsedComponent)
+            local element = parser.execute(testComponent)
+            local layoutObject = layout.execute(element)
 
-            local expectedPosition = {
-                x = { 0, 0, 0 },
-                y = { 0, 1, 2 },
-            }
-            for index, child in ipairs(layedOutComponent.children) do
-                assert.same(expectedPosition.x[index],child.x)
-                assert.same(expectedPosition.y[index],child.y)
+            for index, child in ipairs(layoutObject.children) do
+                assert.same(index - 1, child.y)
             end
         end)
 
-        it('should list children when paddin is applied to parent', function()
+        it('should list children when padding is applied to parent', function()
+            local padding = 10
+
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
                 height = screenSize.tier3.height,
-                padding = { 10, 10 },
                 style = {
+                    padding = { padding },
                     backgroundcolor = colors.border,
                 },
                 { 'child within padding' },
                 { 'another child within padding, 1 row below' },
             }
 
-            local testParsedComponent = parser.execute(testComponent)
-            local layedOutComponent = layout.execute(testParsedComponent)
+            local element = parser.execute(testComponent)
+            local layoutObject = layout.execute(element)
 
-            local expectedPosition = {
-                x = { 10, 10 },
-                y = { 10, 11 },
-            }
-            for index, child in ipairs(layedOutComponent.children) do
-                assert.same(expectedPosition.x[index],child.x)
-                assert.same(expectedPosition.y[index],child.y)
+            for index, child in ipairs(layoutObject.children) do
+                assert.same(padding, child.x)
+                assert.same(padding + index - 1, child.y)
             end
         end)
 
         it('should apply padding if defined', function()
+            local padding = 20
+
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
-                padding = { 20 },
+                style = { padding = { padding } },
                 { 'child within padding' }
             }
 
-            local testParsedComponent = parser.execute(testComponent)
-            local layedOutComponent = layout.execute(testParsedComponent)
+            local element = parser.execute(testComponent)
+            local layoutObject = layout.execute(element)
 
-            local expectedPosition = {
-                x = 20,
-                y = 20,
-            }
-
-            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
-            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+            assert.same(padding, layoutObject.children[1].x)
+            assert.same(padding, layoutObject.children[1].y)
         end)
 
         it('should apply margin if defined', function()
+            local margin = 20
+
             ---@type Component
             local testComponent = {
                 width = screenSize.tier3.width,
-                { 'text with margin', margin = { 20, 20 } }
+                { 'text with margin', style = { margin = { margin } } }
             }
 
-            local testParsedComponent = parser.execute(testComponent)
-            local layedOutComponent = layout.execute(testParsedComponent)
+            local element = parser.execute(testComponent)
+            local layoutObject = layout.execute(element)
 
-            local expectedPosition = {
-                x = 20,
-                y = 20,
-            }
-
-            assert.same(expectedPosition.x, layedOutComponent.children[1].x)
-            assert.same(expectedPosition.y, layedOutComponent.children[1].y)
+            assert.same(margin, layoutObject.children[1].x)
+            assert.same(margin, layoutObject.children[1].y)
         end)
 
-        it('should have a default style', function()
+        it('should have default color and backgroundcolor', function()
             local input = parser.execute({ type = 'div' })
 
             local result = layout.execute(input)
@@ -165,7 +157,7 @@ describe('Layout engine', function()
             assert.same(default.block.style, result.node.props.style)
         end)
 
-        it('should apply custom style if defined', function()
+        it('should apply custom colors if defined', function()
             local input = parser.execute({
                 type = 'div',
                 style = { color = colors.primary }
@@ -187,6 +179,10 @@ describe('Layout engine', function()
             assert.same(
                 merge(
                     fakeBlockLayout,
+                    {
+                        color = defaultBlockColor,
+                        backgroundcolor = defaultBlockBackgroundColor
+                    },
                     { children = { child } }
                 ),
                 result

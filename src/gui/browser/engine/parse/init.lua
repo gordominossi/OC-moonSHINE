@@ -1,10 +1,25 @@
+local default = require('lib.default-components')
+
 local merge = require('lib.language-extensions').mergeTables
 
 local Text = require('src.gui.browser.engine.parse.node.text')
 local Element = require('src.gui.browser.engine.parse.node.element')
 
 local function mergeStyle(parentComponent, childComponent)
-    local style = merge(parentComponent.style, childComponent.style)
+    if type(childComponent) == 'string' then
+        childComponent = { childComponent }
+    end
+
+    local inheritedStyle = merge(
+        parentComponent.style,
+        {
+            margin = default.block.margin,
+            padding = default.block.padding,
+        }
+    )
+    inheritedStyle.height, inheritedStyle.width = nil, nil
+
+    local style = merge(inheritedStyle, childComponent.style)
     return merge(childComponent, { style = style })
 end
 
@@ -22,18 +37,18 @@ function Parser.new()
         component = component or {}
         local componentType = component.type or component[1]
 
-        local _children = {}
+        local children = {}
         for i = 2, #component do
             local childComponent = mergeStyle(component, component[i])
-            _children[i - 1] = self.execute(childComponent)
+            children[i - 1] = self.execute(childComponent)
         end
 
-        local _props = merge({ children = _children }, component)
+        local props = merge({ children = children }, component)
 
         if type(componentType) == 'function'
             or (getmetatable(componentType) or {}).__call
         then
-            return self.execute(componentType(_props))
+            return self.execute(componentType(props))
         end
 
         if type(componentType) == 'table' then
@@ -41,17 +56,18 @@ function Parser.new()
             ---@type Component
             local childComponent = mergeStyle(component, component[1])
             local child = self.execute(childComponent)
-            table.insert(_children, 1, child)
+            table.insert(children, 1, child)
         end
 
-        if #component == 1 and type(componentType) == 'string'
-            or componentType == 'text'
+        if componentType == 'text' or
+            (#component == 1 and
+                type(component[1]) == 'string')
         then
-            _props.value = component[1]
-            return Text.new(_props)
+            local textProps = mergeStyle(props, { value = component[1] })
+            return Text.new(textProps)
         end
 
-        return Element.new(componentType, _props)
+        return Element.new(componentType, props)
     end
 
     return self

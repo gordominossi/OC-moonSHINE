@@ -3,27 +3,11 @@ local it = _ENV.it
 local spy = _ENV.spy
 local stub = _ENV.stub
 
-local colors = require('lib.colors')
 local default = require('lib.default-components')
 local Parser = require('src.gui.browser.engine.parse')
 
 describe('LuaX parser', function()
     local parser = Parser.new()
-    ---@type Component
-    local fakeComponent = {
-        'Fake text',
-    }
-
-    ---@type Node
-    local fakeNode = {
-        type = 'text',
-        key = fakeComponent.key,
-        value = fakeComponent[1],
-        props = {
-            children = {},
-            style = default.text.style,
-        }
-    }
 
     local defaultValuesNode = {
         type = 'div',
@@ -34,34 +18,24 @@ describe('LuaX parser', function()
     }
 
     describe('text', function()
-        it('should parse a text component', function()
-            local result = parser.execute(fakeComponent)
-
-            assert.same(fakeNode, result)
-        end)
+        local textComponent = { 'Fake text' }
 
         it('should have a value the same as input\'s text', function()
-            local result = parser.execute(fakeComponent)
+            local result = parser.execute(textComponent)
 
-            assert.equal(fakeComponent[1], result.value)
-        end)
-
-        it('should have an inline style', function()
-            local result = parser.execute(fakeComponent)
-
-            assert.equal('inline', result.props.style.display)
+            assert.equal(textComponent[1], result.value)
         end)
 
         it('should infer the `"text"` `type`', function()
-            local result = parser.execute({ 'textGoesHere' })
+            local result = parser.execute(textComponent)
 
             assert.same('text', result.type)
         end)
 
         it('should have a default `style`', function()
-            local result = parser.execute({ 'textGoesHere' })
+            local result = parser.execute(textComponent)
 
-            assert.same(default.text.style,result.props.style)
+            assert.same(default.text.style, result.props.style)
         end)
     end)
 
@@ -109,6 +83,44 @@ describe('LuaX parser', function()
                 assert.equal(spyComponent.text, result.value)
             end
         )
+
+        it('should have padding on all sides', function()
+            local parentComponent = {
+                style = { padding = { 1 } },
+            }
+
+
+            local result = parser.execute(parentComponent)
+
+            assert.same(
+                {
+                    top = 1,
+                    right = 1,
+                    bottom = 1,
+                    left = 1,
+                },
+                result.props.style.padding
+            )
+        end)
+
+        it('should have margin on all sides', function()
+            local parentComponent = {
+                style = { margin = { 1 } },
+            }
+
+
+            local result = parser.execute(parentComponent)
+
+            assert.same(
+                {
+                    top = 1,
+                    right = 1,
+                    bottom = 1,
+                    left = 1,
+                },
+                result.props.style.margin
+            )
+        end)
     end)
 
     describe('children', function()
@@ -142,11 +154,22 @@ describe('LuaX parser', function()
         end)
 
         it('should parse deeply nested children', function()
-            local child3 = { fakeComponent }
+            local fakeText = 'Fake Text'
+
+            ---@type Node
+            local fakeNode = {
+                type = 'text',
+                value = fakeText,
+                props = {
+                    children = {},
+                    style = default.text.style,
+                }
+            }
+
             local parentComponent = {
                 {},
-                { 'fakeText' },
-                child3,
+                { fakeText },
+                { { fakeText } },
             }
 
             local result = parser.execute(parentComponent)
