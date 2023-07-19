@@ -6,7 +6,7 @@
     // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
     // Placeholders with the same ids are connected.
     // Example:
-    "Fills in class boilerplate": {
+    "Fill in class boilerplate": {
         "scope": "lua",
         "prefix": "class",
         "body": [
@@ -39,10 +39,35 @@
             "",
             "describe('$1', function()",
             "    it('Should $2', function()",
+            "        $3",
             "    end)",
             "end)",
             "",
         ],
         "description": "Fills up new test boilerplate"
+    },
+    "describe": {
+        "scope": "lua",
+        "prefix": "describe",
+        "body": [
+            "describe('$1', function()",
+            "    it('Should $2', function()",
+            "        $3",
+            "    end)",
+            "end)",
+            "",
+        ],
+        "description": "Creates a new `describe` block"
+    },
+    "it": {
+        "scope": "lua",
+        "prefix": "it",
+        "body": [
+            "it('Should $1', function()",
+            "    $2",
+            "end)",
+            "",
+        ],
+        "description": "Creates a new `it` block"
     }
 }
