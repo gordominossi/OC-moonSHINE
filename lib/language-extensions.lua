@@ -9,11 +9,28 @@ local function mergeTables(...)
     return copy
 end
 
-local function traverseBreadthFirst(tree)
-    local list = tree.children and { tree } or tree
+local function findOnPath(object, path)
+    local value = object
+    for key in string.gmatch(path, "[^%.]*") do
+        if type(value) ~= 'table' or value[key] == nil then
+            return nil
+        end
+
+        value = value[key]
+    end
+
+    return value
+end
+
+local function traverseBreadthFirst(tree, childrenPath)
+    childrenPath = childrenPath or 'children'
+
+    local children = findOnPath(tree, childrenPath)
+    local list = type(children) == "table" and { tree } or tree
 
     for _, parent in ipairs(list) do
-        for _, child in ipairs(parent.children or {}) do
+        children = findOnPath(parent, childrenPath)
+        for _, child in ipairs(children or {}) do
             table.insert(list, child)
         end
     end
@@ -22,6 +39,7 @@ local function traverseBreadthFirst(tree)
 end
 
 return {
+    findOnPath = findOnPath,
     mergeTables = mergeTables,
     traverseBreadthFirst = traverseBreadthFirst,
 }
