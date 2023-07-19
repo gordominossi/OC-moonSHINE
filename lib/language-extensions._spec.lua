@@ -1,5 +1,6 @@
-local mergeTables = require('lib.language-extensions').mergeTables
-local traverseBreadthFirst = require('lib.language-extensions').traverseBreadthFirst
+local extensions = require('lib.language-extensions')
+local mergeTables = extensions.mergeTables
+local traverseBreadthFirst = extensions.traverseBreadthFirst
 
 local describe = _ENV.describe
 local it = _ENV.it
@@ -95,6 +96,17 @@ describe('language extensions', function()
             }
 
             local list = traverseBreadthFirst(tree)
+            for index, element in ipairs(list) do
+                assert.same(index, element[1])
+            end
+        end)
+
+        it('Should accept a list of children as a parameter', function()
+            local children = {
+                { 1 }, { 2 }
+            }
+
+            local list = traverseBreadthFirst(children)
             for index, element in ipairs(list) do
                 assert.same(index, element[1])
             end

@@ -10,7 +10,7 @@ local function mergeTables(...)
 end
 
 local function traverseBreadthFirst(tree)
-    local list = { tree }
+    local list = tree.children and { tree } or tree
 
     for _, parent in ipairs(list) do
         for _, child in ipairs(parent.children or {}) do
