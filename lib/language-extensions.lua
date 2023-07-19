@@ -9,6 +9,19 @@ local function mergeTables(...)
     return copy
 end
 
+local function traverseBreadthFirst(tree)
+    local list = { tree }
+
+    for _, parent in ipairs(list) do
+        for _, child in ipairs(parent.children or {}) do
+            table.insert(list, child)
+        end
+    end
+
+    return list
+end
+
 return {
-    mergeTables = mergeTables
+    mergeTables = mergeTables,
+    traverseBreadthFirst = traverseBreadthFirst,
 }
