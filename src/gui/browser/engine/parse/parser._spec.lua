@@ -83,6 +83,21 @@ describe('LuaX parser', function()
                 assert.equal(spyComponent.text, result.value)
             end
         )
+    end)
+
+    describe('box', function()
+        local padding = 1
+        it('Should not inherit padding from parent', function()
+            local input = { style = { padding = { padding } }, { { 'child 1' } } }
+
+            local result = parser.execute(input)
+
+            local child = result.props.children[1]
+            assert.not_same(
+                result.props.style.padding,
+                child.props.style.padding
+            )
+        end)
 
         it('should have padding on all sides', function()
             local parentComponent = {

@@ -1,5 +1,3 @@
-local default = require('lib.default-components')
-
 local merge = require('lib.language-extensions').mergeTables
 
 local Text = require('src.gui.browser.engine.parse.node.text')
@@ -13,8 +11,8 @@ local function mergeStyle(parentComponent, childComponent)
     local inheritedStyle = merge(
         parentComponent.style,
         {
-            margin = default.block.margin,
-            padding = default.block.padding,
+            margin = { 0 },
+            padding = { 0 },
         }
     )
     inheritedStyle.height, inheritedStyle.width = nil, nil
@@ -63,7 +61,7 @@ function Parser.new()
             (#component == 1 and
                 type(component[1]) == 'string')
         then
-            local textProps = mergeStyle(props, { value = component[1] })
+            local textProps = merge(props, { value = component[1] })
             return Text.new(textProps)
         end
 
