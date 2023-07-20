@@ -8,8 +8,9 @@ local screenSize = require('lib.screen-sizes')
 local Layout = require('src.gui.browser.engine.layout')
 local Parser = require('src.gui.browser.engine.parse')
 
-local merge = require('lib.language-extensions').mergeTables
-local traverseBreadthFirst = require('lib.language-extensions').traverseBreadthFirst
+local extensions = require('lib.language-extensions')
+local merge = extensions.mergeTables
+local traverseBreadthFirst = extensions.traverseBreadthFirst
 
 describe('Layout engine', function()
     local layout = Layout.new()
@@ -46,7 +47,10 @@ describe('Layout engine', function()
             local result = layout.execute(input)
 
             assert.same(default.text.style.color, result.color)
-            assert.same(default.text.style.backgroundcolor, result.backgroundcolor)
+            assert.same(
+                default.text.style.backgroundcolor,
+                result.backgroundcolor
+            )
         end)
     end)
 
@@ -89,30 +93,6 @@ describe('Layout engine', function()
 
             for index, child in ipairs(layoutObject.children) do
                 assert.same(index - 1, child.y)
-            end
-        end)
-
-        it('should list children when padding is applied to parent', function()
-            local padding = 10
-
-            ---@type Component
-            local testComponent = {
-                width = screenSize.tier3.width,
-                height = screenSize.tier3.height,
-                style = {
-                    padding = { padding },
-                    backgroundcolor = colors.border,
-                },
-                { 'child within padding' },
-                { 'another child within padding, 1 row below' },
-            }
-
-            local element = parser.execute(testComponent)
-            local layoutObject = layout.execute(element)
-
-            for index, child in ipairs(layoutObject.children) do
-                assert.same(padding, child.x)
-                assert.same(padding + index - 1, child.y)
             end
         end)
 
@@ -187,6 +167,126 @@ describe('Layout engine', function()
                 ),
                 result
             )
+        end)
+    end)
+
+    describe('padding', function()
+        local padding = 2
+
+        it(
+            'Should not dislocate itself',
+            function()
+                local input = parser.execute({
+                    style = { padding = { padding } },
+                    { 'child 1' },
+                    { 'child 2' },
+                })
+
+                local result = layout.execute(input)
+
+                assert.same(0, result.x)
+                assert.same(0, result.y)
+            end
+        )
+
+        it(
+            'Should move its children opposite to the padding direction',
+            function()
+                local input = parser.execute({
+                    style = { padding = { padding } },
+                    { 'child 1' },
+                    { 'child 2' },
+                })
+
+                local result = layout.execute(input)
+
+                local childList = traverseBreadthFirst(result.children)
+
+                assert.same(padding, childList[1].y)
+                for _, child in ipairs(childList) do
+                    assert.same(padding, child.x)
+                end
+            end
+        )
+
+
+        it('should not inherit padding', function()
+            local input = parser.execute({
+                style = { padding = { padding } },
+                { 'child 1' },
+                { 'child 2' },
+                { 'child 3' },
+                { { 'nested child' }, { { 'deeply nested' } } }
+            })
+
+            local result = layout.execute(input)
+            assert.same(0, result.x)
+
+            local childList = traverseBreadthFirst(result.children)
+            for _, child in ipairs(childList) do
+                assert.same(padding, child.x)
+            end
+        end)
+    end)
+
+    describe('margin', function()
+        local margin = 4
+
+        it(
+            'Should dislocate itself opposite to the margin direction',
+            function()
+                local input = parser.execute({
+                    style = { margin = { margin } },
+                    { 'child 1' },
+                    { 'child 2' },
+                })
+
+                local result = layout.execute(input)
+
+                assert.same(margin, result.x)
+                assert.same(margin, result.y)
+            end
+        )
+        it(
+            'Should dislocate its children opposite to the margin direction',
+            function()
+                local input = parser.execute({
+                    style = { margin = { margin } },
+                    { 'child 1' },
+                    { 'child 2' },
+                })
+
+                local result = layout.execute(input)
+
+                local childList = traverseBreadthFirst(result.children)
+
+                assert.same(margin, childList[1].y)
+                for _, child in ipairs(childList) do
+                    assert(margin, child.x)
+                end
+            end
+        )
+
+        it('should not inherit margin', function()
+            local input = parser.execute({
+                style = { margin = { margin } },
+                { 'child 1' },
+                { 'child 2' },
+                { 'child 3' },
+                { { 'nested child' }, { { 'deeply nested' } } }
+            })
+
+            local result = layout.execute(input)
+
+            assert.same(margin, result.x)
+            assert.same(margin, result.y)
+
+            local childList = traverseBreadthFirst(result.children)
+
+            assert.same(margin, childList[1].y)
+            for _, child in ipairs(childList) do
+                assert(margin, child.x)
+            end
         end)
     end)
 end)
