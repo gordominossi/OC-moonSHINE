@@ -29,19 +29,32 @@ function Parser.new()
     ---@class Parser
     local self = {}
 
-    ---@param component Component
-    ---@return Node
-    function self.execute(component)
-        component = component or {}
-        local componentType = component.type or component[1]
-
+    local function getProps(component)
         local children = {}
         for i = 2, #component do
             local childComponent = mergeStyle(component, component[i])
             children[i - 1] = self.execute(childComponent)
         end
 
-        local props = merge({ children = children }, component)
+        return merge({ children = children }, component)
+    end
+
+    ---@param component Component
+    ---@return Node
+    function self.execute(component)
+        component = component or {}
+        local props = getProps(component)
+
+        if component.type == 'text'
+            or (not component.type
+                and #component == 1
+                and type(component[1]) == 'string')
+        then
+            local textProps = merge(props, { value = component[1] })
+            return Text.new(textProps)
+        end
+
+        local componentType = component.type or component[1]
 
         if type(componentType) == 'function'
             or (getmetatable(componentType) or {}).__call
@@ -54,15 +67,7 @@ function Parser.new()
             ---@type Component
             local childComponent = mergeStyle(component, component[1])
             local child = self.execute(childComponent)
-            table.insert(children, 1, child)
-        end
-
-        if componentType == 'text' or
-            (#component == 1 and
-                type(component[1]) == 'string')
-        then
-            local textProps = merge(props, { value = component[1] })
-            return Text.new(textProps)
+            table.insert(props.children, 1, child)
         end
 
         return Element.new(componentType, props)

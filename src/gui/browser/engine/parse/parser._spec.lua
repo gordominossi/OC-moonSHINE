@@ -26,12 +26,6 @@ describe('LuaX parser', function()
             assert.equal(textComponent[1], result.value)
         end)
 
-        it('should infer the `"text"` `type`', function()
-            local result = parser.execute(textComponent)
-
-            assert.same('text', result.type)
-        end)
-
         it('should have a default `style`', function()
             local result = parser.execute(textComponent)
 
@@ -39,15 +33,41 @@ describe('LuaX parser', function()
         end)
     end)
 
-    describe('element', function()
-        it('should have the same type as the input', function()
-            local fakeType = 'someType'
-
-            local result = parser.execute({ type = fakeType })
-
-            assert.equal(fakeType, result.type)
+    describe('type', function()
+        local customType = 'customType'
+        it('Should have type `div` by default', function()
+            local result = parser.execute({})
+            assert.equal('div', result.type)
         end)
 
+        it('Should accept a type from the table key `type`', function()
+            local result = parser.execute({ type = customType })
+            assert.same(customType, result.type)
+        end)
+
+        it(
+            'Should infer the text type if the only child is a string',
+            function()
+                local result = parser.execute({ '' })
+                assert.same('text', result.type)
+            end
+        )
+
+        it('Should accept the first table element as type', function()
+            local result = parser.execute({ customType, 'text' })
+            assert.same(customType, result.type)
+        end)
+
+        it(
+            'Should prefer the type from the key over the type from the child',
+            function()
+                local result = parser.execute({ type = customType, 'text' })
+                assert.same(customType, result.type)
+            end
+        )
+    end)
+
+    describe('element', function()
         it('should default to `div` type if none is given', function()
             local result = parser.execute({})
 
@@ -88,7 +108,10 @@ describe('LuaX parser', function()
     describe('box', function()
         local padding = 1
         it('Should not inherit padding from parent', function()
-            local input = { style = { padding = { padding } }, { { 'child 1' } } }
+            local input = {
+                style = { padding = { padding } },
+                { { 'child 1' } },
+            }
 
             local result = parser.execute(input)
 
