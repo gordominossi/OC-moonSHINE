@@ -9,14 +9,6 @@ local Parser = require('src.gui.browser.engine.parse')
 describe('LuaX parser', function()
     local parser = Parser.new()
 
-    local defaultValuesNode = {
-        type = 'div',
-        props = {
-            children = {},
-            style = default.block.style,
-        },
-    }
-
     describe('text', function()
         local textComponent = { 'Fake text' }
 
@@ -71,11 +63,20 @@ describe('LuaX parser', function()
         it('should default to `div` type if none is given', function()
             local result = parser.execute({})
 
-            assert.same(defaultValuesNode, result)
+            assert.same('div', result.type)
         end)
 
         it('should call the component if it is a function', function()
             local stubComponent = { function() end }
+            stub(stubComponent, 1)
+
+            parser.execute(stubComponent)
+
+            assert.stub(stubComponent[1]).was_called()
+        end)
+
+        it('should call the type if it is a function', function()
+            local stubComponent = { type = function() end }
             stub(stubComponent, 'type')
 
             parser.execute(stubComponent)
@@ -162,61 +163,32 @@ describe('LuaX parser', function()
     end)
 
     describe('children', function()
-        it('should parse children', function()
-            local parentComponent = { {} }
+        it('Should have the same amount of children as the component',
+            function()
+                local result = parser.execute({ children = { 1, 2, 3 } })
+                assert.same(3, #result.props.children)
+            end
+        )
 
-            local result = parser.execute(parentComponent)
-            local children = result.props.children
-
-            assert.same({ defaultValuesNode }, children)
+        it('Should take a list of tables as a list of children', function()
+            local result = parser.execute({ nil, 1, 2, 3 })
+            assert.same(3, #result.props.children)
         end)
 
-        it('should inherit style from parent', function()
-            local child = { style = { visible = false } }
-            local parentComponent = {
-                style = { color = 0x123456 },
-                child,
-            }
-
-            local result = parser.execute(parentComponent)
-            local children = result.props.children
-
-            assert.equal(
-                parentComponent.style.color,
-                children[1].props.style.color
-            )
-            assert.equal(
-                parentComponent[1].style.visible,
-                children[1].props.style.visible
-            )
+        it('Should nest children', function()
+            local result = parser.execute({ '', 1, { 2 }, { 3 } })
+            assert.same(3, #result.props.children)
         end)
 
-        it('should parse deeply nested children', function()
-            local fakeText = 'Fake Text'
-
-            ---@type Node
-            local fakeNode = {
-                type = 'text',
-                value = fakeText,
-                props = {
-                    children = {},
-                    style = default.text.style,
-                }
-            }
-
-            local parentComponent = {
-                {},
-                { fakeText },
-                { { fakeText } },
-            }
-
-            local result = parser.execute(parentComponent)
-            local children = result.props.children
-
-            assert.equal('div', children[1].type)
-            assert.equal('text', children[2].type)
-            assert.equal('div', children[3].type)
-            assert.same({ fakeNode }, children[3].props.children)
+        it('Should nest children deeply', function()
+            local result = parser.execute({
+                type = '',
+                1,
+                { 2 },
+                { children = { 3, { 4 } } },
+            })
+            assert.same(3, #result.props.children)
+            assert.same(2, #result.props.children[3].props.children)
         end)
     end)
 end)

@@ -3,22 +3,55 @@ local merge = require('lib.language-extensions').mergeTables
 local Text = require('src.gui.browser.engine.parse.node.text')
 local Element = require('src.gui.browser.engine.parse.node.element')
 
-local function mergeStyle(parentComponent, childComponent)
-    if type(childComponent) == 'string' then
-        childComponent = { childComponent }
+---@param component Component
+---@return nodeType
+local function getType(component)
+    if type(component) == 'string' or type(component) == 'number' then
+        return 'text'
     end
 
-    local inheritedStyle = merge(
-        parentComponent.style,
-        {
-            margin = { 0 },
-            padding = { 0 },
-        }
-    )
-    inheritedStyle.height, inheritedStyle.width = nil, nil
+    if component.type then
+        return component.type
+    end
 
-    local style = merge(inheritedStyle, childComponent.style)
-    return merge(childComponent, { style = style })
+    if #component == 1 and type(component[1]) == 'string' then
+        return 'text'
+    end
+
+    if type(component[1]) == 'string'
+        or type(component[1]) == 'function'
+        or (getmetatable(component[1]) or {}).__call
+    then
+        return component[1]
+    end
+
+    return 'div'
+end
+
+---@param component Component
+---@return Props
+local function getProps(component, componentType)
+    local children = {}
+    local value = ''
+
+    if type(component) == 'string' or type(component) == 'number' then
+        value = tostring(component)
+        return { children = children, value = value }
+    end
+
+    if componentType == 'text' then
+        value = table.concat(component, ' ')
+    else
+        local firstChildIsNotJustType = component.type
+            or type(component[1]) == 'table'
+        local firstChildIndex = firstChildIsNotJustType and 1 or 2
+        children = { table.unpack(component, firstChildIndex) }
+    end
+
+    return merge(
+        { children = children, value = value },
+        component
+    )
 end
 
 ---@type Parser
@@ -29,32 +62,12 @@ function Parser.new()
     ---@class Parser
     local self = {}
 
-    local function getProps(component)
-        local children = {}
-        for i = 2, #component do
-            local childComponent = mergeStyle(component, component[i])
-            children[i - 1] = self.execute(childComponent)
-        end
-
-        return merge({ children = children }, component)
-    end
-
     ---@param component Component
     ---@return Node
     function self.execute(component)
         component = component or {}
-        local props = getProps(component)
-
-        if component.type == 'text'
-            or (not component.type
-                and #component == 1
-                and type(component[1]) == 'string')
-        then
-            local textProps = merge(props, { value = component[1] })
-            return Text.new(textProps)
-        end
-
-        local componentType = component.type or component[1]
+        local componentType = getType(component)
+        local props = getProps(component, componentType)
 
         if type(componentType) == 'function'
             or (getmetatable(componentType) or {}).__call
@@ -62,15 +75,21 @@ function Parser.new()
             return self.execute(componentType(props))
         end
 
-        if type(componentType) == 'table' then
-            componentType = nil
-            ---@type Component
-            local childComponent = mergeStyle(component, component[1])
-            local child = self.execute(childComponent)
-            table.insert(props.children, 1, child)
+        if componentType == 'text' then
+            return Text.new(props)
         end
 
-        return Element.new(componentType, props)
+        local children = {}
+        if props.children then
+            for index, child in ipairs(props.children) do
+                children[index] = self.execute(child)
+            end
+        end
+
+        return Element.new(
+            componentType,
+            merge(props, { children = children })
+        )
     end
 
     return self
