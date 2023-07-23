@@ -47,7 +47,7 @@ describe('paint', function()
                     type = 'fill',
                     x = 0,
                     y = 0,
-                    width = 0,
+                    width = 160,
                     height = 2,
                     backgroundcolor = colors.default,
                     color = colors.background,
@@ -88,7 +88,7 @@ describe('paint', function()
                     type = 'fill',
                     x = 0,
                     y = 0,
-                    width = 0,
+                    width = 160,
                     height = 2,
                     backgroundcolor = colors.default,
                     color = colors.background,
@@ -97,7 +97,7 @@ describe('paint', function()
                     type = 'fill',
                     x = 0,
                     y = 0,
-                    width = 0,
+                    width = 160,
                     height = 2,
                     backgroundcolor = colors.default,
                     color = colors.background,
@@ -129,9 +129,9 @@ describe('paint', function()
         it('should create an element to be send to the gpu api', function()
             local component = {
                 type = 'div',
-                height = 5,
-                width = 5,
                 style = {
+                    height = 5,
+                    width = 5,
                     backgroundcolor = colors.background,
                     color = colors.info,
                 },
@@ -157,8 +157,10 @@ describe('paint', function()
 
         it('should create a list to be send to the gpu api', function()
             local component = {
-                height = 40,
-                width = 80,
+                style = {
+                    height = 40,
+                    width = 80
+                },
                 { 'text' },
                 { 'text' },
             }
@@ -172,7 +174,7 @@ describe('paint', function()
                     x = 0,
                     y = 0,
                     width = 80,
-                    height = 42,
+                    height = 40,
                     backgroundcolor = colors.default,
                     color = colors.background,
                 },

@@ -1,9 +1,6 @@
 ---@meta
 
----@alias nodeTypes
----| 'text'
----| 'div'
----| 'button'
+---@alias nodeType any
 
 ---@alias alignOptions
 ---| 'auto'
@@ -33,6 +30,8 @@
 ---@field flexdirection? 'row' | 'column'
 ---@field margin { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
 ---@field padding { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
+---@field width integer
+---@field height integer
 ---@field visible? boolean
 
 ---@alias text string | number
@@ -56,15 +55,12 @@
 
 ---@class Props
 ---@field children Component[]
----@field width integer
----@field height integer
----@field margin? table
----@field padding? table
 ---@field attributes Attributes
 ---@field style Style
+---@field type? nodeType | string
 
 ---@class Node
----@field type nodeTypes
+---@field type nodeType
 ---@field value? string | number | function | Component
 ---@field props Props
 

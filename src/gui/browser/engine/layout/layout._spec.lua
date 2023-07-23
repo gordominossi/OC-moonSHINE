@@ -54,13 +54,29 @@ describe('Layout engine', function()
         end)
     end)
 
+    describe('children', function()
+        it('should display children on different lines', function()
+            local input = parser.execute({
+                type = 'div',
+                'child 1',
+                'child 2',
+                'child 3',
+            })
+
+            local result = layout.execute(input)
+
+            for index = 1, 3 do
+                assert.same(index - 1, result.children[index].y)
+            end
+        end)
+    end)
+
     describe('block', function()
         local defaultBlockColor = default.block.style.color
         local defaultBlockBackgroundColor = default.block.style.backgroundcolor
 
         ---@type Component
         local fakeComponent = {
-            width = 20,
             { 'Fake text', style = { color = colors.primary } },
         }
 
@@ -72,7 +88,7 @@ describe('Layout engine', function()
             parent = {},
             previous = {},
             children = {},
-            width = 20,
+            width = 160,
             height = 1,
             x = 0,
             y = 0,
@@ -101,8 +117,10 @@ describe('Layout engine', function()
 
             ---@type Component
             local testComponent = {
-                width = screenSize.tier3.width,
-                style = { padding = { padding } },
+                style = {
+                    padding = { padding },
+                    width = screenSize.tier3.width,
+                },
                 { 'child within padding' }
             }
 
@@ -118,8 +136,13 @@ describe('Layout engine', function()
 
             ---@type Component
             local testComponent = {
-                width = screenSize.tier3.width,
-                { 'text with margin', style = { margin = { margin } } }
+                {
+                    'text with margin',
+                    style = {
+                        margin = { margin },
+                        width = screenSize.tier3.width,
+                    },
+                }
             }
 
             local element = parser.execute(testComponent)
@@ -209,7 +232,6 @@ describe('Layout engine', function()
             end
         )
 
-
         it('should not inherit padding', function()
             local input = parser.execute({
                 style = { padding = { padding } },
@@ -286,6 +308,24 @@ describe('Layout engine', function()
             assert.same(margin, childList[1].y)
             for _, child in ipairs(childList) do
                 assert(margin, child.x)
+            end
+        end)
+
+        it('should not interfere with sibling\'s margin', function()
+            local input = parser.execute({
+                { 'child 1',          style = { margin = { left = margin } } },
+                { 'child 2' },
+                { 'child 3' },
+                { { 'nested child' }, { { 'deeply nested' } } }
+            })
+
+            local result = layout.execute(input)
+
+            local childList = traverseBreadthFirst(result.children)
+
+            assert.same(margin, childList[1].x)
+            for i = 2, #childList do
+                assert(0, childList[i].x)
             end
         end)
     end)
