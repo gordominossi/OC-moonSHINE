@@ -16,10 +16,10 @@
             "---@return $1",
             "function $1.new()",
             "    ---@class $1",
-            "    local self = {}",
+            "    local self = {$2}",
             "",
-            "    function self.$2()",
-            "        ",
+            "    function self.$3()",
+            "        $0",
             "    end",
             "",
             "    return self",
@@ -39,7 +39,7 @@
             "",
             "describe('$1', function()",
             "    it('Should $2', function()",
-            "        $3",
+            "        $0",
             "    end)",
             "end)",
             "",
@@ -52,10 +52,9 @@
         "body": [
             "describe('$1', function()",
             "    it('Should $2', function()",
-            "        $3",
+            "        $0",
             "    end)",
             "end)",
-            "",
         ],
         "description": "Creates a new `describe` block"
     },
@@ -64,9 +63,8 @@
         "prefix": "it",
         "body": [
             "it('Should $1', function()",
-            "    $2",
+            "    $0",
             "end)",
-            "",
         ],
         "description": "Creates a new `it` block"
     }
