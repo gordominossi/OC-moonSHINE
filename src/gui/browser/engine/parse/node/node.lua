@@ -1,6 +1,21 @@
 local default = require('lib.default-components')
 local merge = require('lib.language-extensions').mergeTables
 
+local function getBoxSides(box)
+    box = box or {}
+
+    if type(box) == 'number' then
+        box = { box }
+    end
+
+    return {
+        top = box.top or box[1] or 0,
+        right = box.right or box[2] or box[1] or 0,
+        bottom = box.bottom or box[3] or box[1] or 0,
+        left = box.left or box[4] or box[2] or box[1] or 0,
+    }
+end
+
 ---@type Node
 local Node = {}
 
@@ -11,35 +26,14 @@ local Node = {}
 function Node.new(type, props, children)
     props = props or {}
     local propsStyle = props.style or {}
-    local propsMargin = propsStyle.margin or {}
-    local propsPadding = propsStyle.padding or {}
-
-    local margin = {
-        top = propsMargin.top or propsMargin[1] or 0,
-        right = propsMargin.right or propsMargin[2] or propsMargin[1] or 0,
-        bottom = propsMargin.bottom or propsMargin[3] or propsMargin[1] or 0,
-        left = propsMargin.left
-            or propsMargin[4]
-            or propsMargin[2]
-            or propsMargin[1]
-            or 0,
-    }
-
-    local padding = {
-        top = propsPadding.top or propsPadding[1] or 0,
-        right = propsPadding.right or propsPadding[2] or propsPadding[1] or 0,
-        bottom = propsPadding.bottom or propsPadding[3] or propsPadding[1] or 0,
-        left = propsPadding.left
-            or propsPadding[4]
-            or propsPadding[2]
-            or propsPadding[1]
-            or 0,
-    }
+    local margin = getBoxSides(propsStyle.margin)
+    local padding = getBoxSides(propsStyle.padding)
+    local border = getBoxSides(propsStyle.border)
 
     local style = merge(
         default.block.style,
         propsStyle,
-        { padding = padding, margin = margin }
+        { padding = padding, margin = margin, border = border }
     )
 
     ---@type Props

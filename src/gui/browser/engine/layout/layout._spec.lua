@@ -329,4 +329,35 @@ describe('Layout engine', function()
             end
         end)
     end)
+
+    describe('border', function()
+        it('Should occupy space between margin and padding', function()
+            local input = parser.execute({
+                style = {
+                    padding = { 1, 3 },
+                    border = { 1 },
+                },
+                { 'hello' }
+            })
+
+            local result = layout.execute(input)
+
+            assert.same(4, result.children[1].x)
+            assert.same(2, result.children[1].y)
+        end)
+
+        it('Should add to element height', function()
+            local input = parser.execute({
+                style = {
+                    padding = { 1 },
+                    border = { 1 },
+                },
+                'hello'
+            })
+
+            local result = layout.execute(input)
+
+            assert.same(5, result.height)
+        end)
+    end)
 end)

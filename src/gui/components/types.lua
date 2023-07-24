@@ -30,6 +30,7 @@
 ---@field flexdirection? 'row' | 'column'
 ---@field margin { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
 ---@field padding { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
+---@field border { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer } | boolean
 ---@field width integer
 ---@field height integer
 ---@field visible? boolean

@@ -15,33 +15,44 @@ function Layout.new()
         local parentStyle = parent.node and parent.node.props.style or {}
         local parentPadding = parentStyle.padding
             or { top = 0, right = 0, bottom = 0, left = 0 }
-
+        local parentBorder = parentStyle.border
+            or { top = 0, right = 0, bottom = 0, left = 0 }
         local style = node.props.style
         local margin = style.margin
 
-        local x = (parent.x or 0) + parentPadding.left + margin.left
-        local y = (parent.y or 0) + parentPadding.top + margin.top
+        local x = (parent.x or 0)
+            + parentBorder.top
+            + parentPadding.left
+            + margin.left
+        local y = (parent.y or 0)
+            + parentBorder.top
+            + parentPadding.top
+            + margin.top
+
         if previousSibling then
+            local previousMargin = previousSibling.node.props.style.margin
             if parentStyle.display == 'inline' then
                 x = previousSibling.x
                     + previousSibling.width
+                    + #' '
                     + math.max(
-                        previousSibling.node.props.style.margin.right,
+                        previousMargin.right,
                         margin.left
                     )
             else
                 y = previousSibling.y
                     + previousSibling.height
                     + math.max(
-                        previousSibling.node.props.style.margin.bottom,
+                        previousMargin.bottom,
                         margin.top
                     )
             end
         end
 
-        local maxWidth = (parent.width or 160) -
-            (margin.left + margin.right) -
-            (parentPadding.left + parentPadding.right)
+        local maxWidth = (parent.width or 160)
+            - (margin.left + margin.right)
+            - (parentBorder.left + parentBorder.right)
+            - (parentPadding.left + parentPadding.right)
 
         local layoutObject = {
             node = node,
@@ -49,7 +60,10 @@ function Layout.new()
             previous = previousSibling or {},
             children = {},
             width = style.width or maxWidth,
-            height = style.padding.top + style.padding.bottom,
+            height = style.padding.top
+                + style.padding.bottom
+                + style.border.top
+                + style.border.bottom,
             x = x,
             y = y,
             color = style.color,
@@ -57,7 +71,6 @@ function Layout.new()
         }
 
         if (node.type == 'text') then
-            layoutObject.height = layoutObject.height + 1
             layoutObject.width = #node.value
         end
 
@@ -67,11 +80,18 @@ function Layout.new()
                 layoutObject,
                 layoutObject.children[i - 1]
             )
-            layoutObject.height = layoutObject.height
-                + layoutObject.children[i].height
-                + child.props.style.margin.top
-                + child.props.style.margin.bottom
+            if style.display ~= 'inline' then
+                layoutObject.height = layoutObject.height
+                    + layoutObject.children[i].height
+                    + child.props.style.margin.top
+                    + child.props.style.margin.bottom
+            end
         end
+
+        if style.display == 'inline' then
+            layoutObject.height = layoutObject.height + 1
+        end
+
         layoutObject.height = style.height or layoutObject.height
 
         return layoutObject

@@ -1,3 +1,6 @@
+local colors = require('lib.colors')
+local merge = require('lib.language-extensions').mergeTables
+
 ---@type Paint
 local Paint = {}
 
@@ -13,25 +16,85 @@ function Paint.new()
         local result = {}
 
         if (input.node.type == 'text') then
-            table.insert(result, {
+            table.insert(
+                result,
+                {
+                    type = 'set',
+                    x = input.x,
+                    y = input.y,
+                    value = input.node.value,
+                    vertical = false,
+                    color = input.color,
+                    backgroundcolor = input.backgroundcolor,
+                }
+            )
+        elseif (input.node.type == 'div') then
+            table.insert(
+                result,
+                {
+                    type = 'fill',
+                    x = input.x,
+                    y = input.y,
+                    height = input.height,
+                    width = input.width,
+                    color = input.backgroundcolor,
+                    backgroundcolor = input.color,
+                }
+            )
+
+            local border = input.node.props.style.border
+            local verticalBar = string.rep('|', input.height)
+            local horizontalBar = string.rep('—', input.width - 2)
+            local borderInstruction = {
                 type = 'set',
                 x = input.x,
                 y = input.y,
-                value = input.node.value,
-                vertical = false,
-                color = input.color,
+                vertical = true,
+                value = verticalBar,
+                color = border.color or colors.border,
                 backgroundcolor = input.backgroundcolor,
-            })
-        elseif (input.node.type == 'div') then
-            table.insert(result, {
-                type = 'fill',
-                x = input.x,
-                y = input.y,
-                height = input.height,
-                width = input.width,
-                color = input.backgroundcolor,
-                backgroundcolor = input.color,
-            })
+            }
+
+            if border.left ~= 0 then
+                table.insert(result, merge(borderInstruction))
+            end
+
+            if border.right ~= 0 then
+                table.insert(
+                    result,
+                    merge(
+                        borderInstruction,
+                        { x = input.x + input.width - 1 }
+                    )
+                )
+            end
+
+            if border.top ~= 0 then
+                table.insert(
+                    result,
+                    merge(
+                        borderInstruction,
+                        {
+                            vertical = false,
+                            value = '╭' .. horizontalBar .. '╮',
+                        }
+                    )
+                )
+            end
+
+            if border.bottom ~= 0 then
+                table.insert(
+                    result,
+                    merge(
+                        borderInstruction,
+                        {
+                            y = input.y + input.height - 1,
+                            vertical = false,
+                            value = '╰' .. horizontalBar .. '╯',
+                        }
+                    )
+                )
+            end
         end
 
         for _, child in ipairs(input.children) do

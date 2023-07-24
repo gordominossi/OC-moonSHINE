@@ -13,27 +13,30 @@ describe('paint', function()
     local paint = Paint.new()
 
     describe('text', function()
-        it('Should create an element that can be send to the gpu api', function()
-            local parsedComponent = parser.execute({ 'text' })
-            local input = layout.execute(parsedComponent)
+        it(
+            'Should create an element that can be sent to the gpu api',
+            function()
+                local parsedComponent = parser.execute({ 'text' })
+                local input = layout.execute(parsedComponent)
 
-            local result = paint.execute(input)
+                local result = paint.execute(input)
 
-            local expectedList = {
-                {
-                    type = 'set',
-                    x = 0,
-                    y = 0,
-                    value = 'text',
-                    vertical = false,
-                    color = colors.default,
-                    backgroundcolor = colors.background
+                local expectedList = {
+                    {
+                        type = 'set',
+                        x = 0,
+                        y = 0,
+                        value = 'text',
+                        vertical = false,
+                        color = colors.default,
+                        backgroundcolor = colors.background
+                    }
                 }
-            }
-            assert.same(expectedList, result)
-        end)
+                assert.same(expectedList, result)
+            end
+        )
 
-        it('Should create a list that can be send to the gpu api', function()
+        it('Should create a list that can be sent to the gpu api', function()
             local parsedComponent = parser.execute({
                 { 'text' },
                 { 'text' },
@@ -126,7 +129,7 @@ describe('paint', function()
     end)
 
     describe('block', function()
-        it('should create an element to be send to the gpu api', function()
+        it('should create an element to be sent to the gpu api', function()
             local component = {
                 type = 'div',
                 style = {
@@ -155,7 +158,7 @@ describe('paint', function()
             assert.same(expectedList, paintList)
         end)
 
-        it('should create a list to be send to the gpu api', function()
+        it('should create a list to be sent to the gpu api', function()
             local component = {
                 style = {
                     height = 40,
@@ -199,6 +202,26 @@ describe('paint', function()
             }
 
             assert.same(expectedList, paintList)
+        end)
+    end)
+
+    describe('border', function()
+        it('Should create a border around the component', function()
+            local input = layout.execute(parser.execute({
+                style = {
+                    width = 7,
+                    border = { 1 },
+                },
+                { 'hello' }
+            }))
+
+            local result = paint.execute(input)
+
+            assert.same(3, #result[2].value)
+            assert.same(3, #result[3].value)
+            assert.same(3 * (#'hello' + 2), #result[4].value)
+            assert.same(3 * (#'hello' + 2), #result[5].value)
+            assert.same('hello', result[6].value)
         end)
     end)
 end)
