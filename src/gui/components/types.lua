@@ -28,18 +28,17 @@
 ---@field color? integer
 ---@field display? displayOptions
 ---@field flexdirection? 'row' | 'column'
----@field margin { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
----@field padding { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
----@field border { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer } | boolean
----@field width integer
----@field height integer
+---@field margin? { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
+---@field padding? { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
+---@field border? { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer } | boolean
+---@field width? integer
+---@field height? integer
 ---@field visible? boolean
 
 ---@alias text string | number
 
 ---@class Component : table
 ---@field [1] text | function | Component tag or child
----@field props Props
 ---@field [string] any attribute
 ---@field [number]? text | Component child
 

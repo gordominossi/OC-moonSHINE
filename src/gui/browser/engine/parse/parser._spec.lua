@@ -128,7 +128,6 @@ describe('LuaX parser', function()
                 style = { padding = { 1 } },
             }
 
-
             local result = parser.execute(parentComponent)
 
             assert.same(

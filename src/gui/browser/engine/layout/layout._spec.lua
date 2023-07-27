@@ -12,9 +12,154 @@ local extensions = require('lib.language-extensions')
 local merge = extensions.mergeTables
 local traverseBreadthFirst = extensions.traverseBreadthFirst
 
-describe('Layout engine', function()
+describe('Layout', function()
     local layout = Layout.new()
     local parser = Parser.new()
+
+    describe('normal flow', function()
+        describe('block', function()
+            it('Should be layed out one after another, vertically', function()
+                local input = parser.execute({
+                    'div',
+                    'text',
+                    'text',
+                })
+
+                local result = layout.execute(input)
+
+                assert.same(result.y, result.children[1].y)
+                assert.same(result.y + 1, result.children[2].y)
+            end)
+
+            it('Should align its left edge with its parent\'s', function()
+                local input = parser.execute({
+                    'div',
+                    style = { margin = { left = 3 } },
+                    'text',
+                    'text',
+                })
+
+                local result = layout.execute(input)
+
+                assert.same(result.x, result.children[1].x)
+                assert.same(result.x, result.children[2].x)
+            end)
+
+            it('Should occupy the whole parent width', function()
+                local input = parser.execute({
+                    'div',
+                    style = { width = 16 },
+                    { 'div', 'text' },
+                    { 'div', 'text' },
+                })
+
+                local result = layout.execute(input)
+
+                assert.same(result.width, result.children[1].width)
+                assert.same(result.width, result.children[2].width)
+            end)
+
+            it('Should have just enough height to fit its content', function()
+                local input = parser.execute({
+                    'div',
+                    'text',
+                    'text',
+                })
+
+                local result = layout.execute(input)
+
+                local childrenHeight = 0
+                for _, child in ipairs(result.children) do
+                    childrenHeight = childrenHeight + child.height
+                end
+                assert.same(childrenHeight, result.height)
+            end)
+        end)
+
+        describe('inline', function()
+            it('Should ignore width and height', function()
+                local input = parser.execute({
+                    'div',
+                    style = { width = 2, height = 2, display = 'inline' },
+                    'text',
+                })
+
+                local result = layout.execute(input)
+
+                assert.same(result.children[1].width, #'text')
+                assert.same(result.children[1].height, 1)
+            end)
+
+            it(
+                'Should be layed out on the same line along its siblings',
+                function()
+                    local input = parser.execute(
+                        {
+                            'div',
+                            style = { display = 'inline' },
+                            'text',
+                            'text',
+                        }
+                    )
+
+                    local result = layout.execute(input)
+
+                    assert.same(result.x, result.children[1].x)
+                    assert.same(result.y, result.children[1].y)
+                    assert.same(result.x + #'text' + #' ', result.children[2].x)
+                    assert.same(result.y, result.children[2].y)
+                end
+            )
+
+            it(
+                'Should break into a new line if parent\'s width is not enough',
+                function()
+                    local input = parser.execute(
+                        {
+                            'div',
+                            style = { display = 'inline', width = #'text' },
+                            'text',
+                            'text',
+                        }
+                    )
+
+                    local result = layout.execute(input)
+
+                    assert.same(result.x, result.children[1].x)
+                    assert.same(result.y, result.children[1].y)
+                    assert.same(result.x, result.children[2].x)
+                    assert.same(result.y + 1, result.children[2].y)
+                end
+            )
+        end)
+
+        it('Should collapse margins on the vertical direction', function()
+            local input = parser.execute({
+                'div',
+                {
+                    'div',
+                    style = { display = 'inline', margin = 5 },
+                    'text',
+                    'text2',
+                },
+                { 'div', style = { margin = 2 }, 'text' },
+                {
+                    'div',
+                    style = { display = 'inline', width = 9 },
+                    'text',
+                    'text2',
+                },
+                { 'div', style = { margin = 6 }, 'text' },
+            })
+
+            local result = layout.execute(input)
+
+            assert.same(result.y + 5, result.children[1].y)
+            assert.same(result.children[1].y + 1 + 5, result.children[2].y)
+            assert.same(result.children[2].y + 1 + 2, result.children[3].y)
+            assert.same(result.children[3].y + 2 + 6, result.children[4].y)
+        end)
+    end)
 
     describe('text', function()
         local fakeText = parser.execute({
@@ -352,7 +497,7 @@ describe('Layout engine', function()
                     padding = { 1 },
                     border = { 1 },
                 },
-                'hello'
+                { 'hello' },
             })
 
             local result = layout.execute(input)

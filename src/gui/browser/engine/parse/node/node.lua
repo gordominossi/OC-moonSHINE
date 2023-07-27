@@ -16,7 +16,6 @@ local function getBoxSides(box)
     }
 end
 
----@type Node
 local Node = {}
 
 ---@param type string
