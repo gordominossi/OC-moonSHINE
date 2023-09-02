@@ -15,20 +15,20 @@ function Paint.new()
         ---@type PaintObject[] list
         local result = {}
 
-        if (input.node.type == 'text') then
+        if (input.text) then
             table.insert(
                 result,
                 {
                     type = 'set',
                     x = input.x,
                     y = input.y,
-                    value = input.node.value,
+                    value = input.text,
                     vertical = false,
                     color = input.color,
                     backgroundcolor = input.backgroundcolor,
                 }
             )
-        elseif (input.node.type == 'div') then
+        else
             table.insert(
                 result,
                 {
@@ -42,7 +42,7 @@ function Paint.new()
                 }
             )
 
-            local border = input.node.props.style.border
+            local border = input.border
             local verticalBar = string.rep('|', input.height)
             local horizontalBar = string.rep('—', input.width - 2)
             local borderInstruction = {
@@ -51,7 +51,7 @@ function Paint.new()
                 y = input.y,
                 vertical = true,
                 value = verticalBar,
-                color = border.color or colors.border,
+                color = colors.border,
                 backgroundcolor = input.backgroundcolor,
             }
 

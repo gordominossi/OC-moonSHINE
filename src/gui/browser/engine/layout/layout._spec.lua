@@ -220,6 +220,8 @@ describe('Layout', function()
 
     ---@type LayoutObject
     local fakeTextLayout = {
+      text = 'Fake text',
+      border = default.block.style.border,
       children = {},
       width = #'Fake text',
       height = 1,
@@ -278,6 +280,7 @@ describe('Layout', function()
 
     ---@type LayoutObject
     local fakeBlockLayout = {
+      border = default.block.style.border,
       children = {},
       width = 160,
       height = 1,

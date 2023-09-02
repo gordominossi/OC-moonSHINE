@@ -80,6 +80,8 @@
 ---@field y integer
 ---@field color integer
 ---@field backgroundcolor integer
+---@field border Box | boolean
+---@field text? string
 
 ---@class PaintObject
 ---@field type string
