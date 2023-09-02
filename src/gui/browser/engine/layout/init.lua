@@ -84,6 +84,7 @@ function Layout.new()
     local children = {}
     local layoutObject = {
       children = children,
+      border = style.border or {},
       width = width,
       height = height,
       x = x,
@@ -205,7 +206,9 @@ function Layout.new()
     end
 
     local layoutObject = {
+      text = node.type == 'text' and node.value --[[@as string]] or nil,
       children = {},
+      border = style.border,
       width = width,
       height = height,
       x = x,
@@ -234,6 +237,10 @@ function Layout.new()
           flexTotal = flexTotal + (flexChild.props.style.flex or { 0 })[1]
         end
         layoutChild.width = width * (child.props.style.flex or { 0 })[1] / flexTotal
+      end
+
+      if style.display == 'inline' then
+        layoutChild.text = child.value
       end
 
       local notEnoughWidth = style.display == 'inline'

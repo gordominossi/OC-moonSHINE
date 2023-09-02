@@ -211,6 +211,24 @@ describe('Layout', function()
         )
       end)
     end)
+
+    describe('justify-content', function()
+      it('Should align the components with the edges of the parent', function()
+        local input = parser.execute({
+          style = { display = 'flex', aligncontent = 'space-between' },
+          { 'text' },
+          { 'text' },
+        })
+
+        local result = layout.execute(input)
+
+        assert.same(0, result.children[1].x)
+        assert.same(
+          result.width - result.children[2].width,
+          result.children[2].x
+        )
+      end)
+    end)
   end)
 
   describe('text', function()
@@ -220,6 +238,8 @@ describe('Layout', function()
 
     ---@type LayoutObject
     local fakeTextLayout = {
+      text = 'Fake text',
+      border = default.block.style.border,
       children = {},
       width = #'Fake text',
       height = 1,
@@ -278,6 +298,7 @@ describe('Layout', function()
 
     ---@type LayoutObject
     local fakeBlockLayout = {
+      border = default.block.style.border,
       children = {},
       width = 160,
       height = 1,
