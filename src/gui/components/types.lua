@@ -20,6 +20,13 @@
 ---| 'inherit'
 ---| 'none'
 
+---@alias Box
+---| { top: integer, right: integer, bottom: integer, left: integer }
+---| { [1]: integer }
+---| { [2]: integer }
+---| { [3]: integer }
+---| { [4]: integer }
+
 ---@class Style
 ---@field aligncontent? alignOptions
 ---@field alignitems? alignOptions
@@ -27,10 +34,11 @@
 ---@field backgroundcolor? integer
 ---@field color? integer
 ---@field display? displayOptions
+---@field flex? { [1]: integer }
 ---@field flexdirection? 'row' | 'column'
----@field margin? { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
----@field padding? { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer }
----@field border? { top: integer, right: integer, bottom: integer, left: integer } | { [integer]: integer } | boolean
+---@field margin? Box
+---@field padding? Box
+---@field border? Box | boolean
 ---@field width? integer
 ---@field height? integer
 ---@field visible? boolean
@@ -70,9 +78,6 @@
 ---@field width integer
 ---@field x integer
 ---@field y integer
----@field node Node
----@field parent LayoutObject
----@field previous LayoutObject
 ---@field color integer
 ---@field backgroundcolor integer
 

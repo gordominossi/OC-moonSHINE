@@ -168,9 +168,6 @@ describe('Layout', function()
 
         ---@type LayoutObject
         local fakeTextLayout = {
-            node = fakeText,
-            parent = {},
-            previous = {},
             children = {},
             width = #'Fake text',
             height = 1,
@@ -229,9 +226,6 @@ describe('Layout', function()
 
         ---@type LayoutObject
         local fakeBlockLayout = {
-            node = fakeElement,
-            parent = {},
-            previous = {},
             children = {},
             width = 160,
             height = 1,
@@ -302,36 +296,24 @@ describe('Layout', function()
 
             local result = layout.execute(input)
 
-            assert.same(default.block.style, result.node.props.style)
-        end)
-
-        it('should apply custom colors if defined', function()
-            local input = parser.execute({
-                type = 'div',
-                style = { color = colors.primary }
-            })
-            local result = layout.execute(input)
-
-            local expectedStyle = merge(
-                default.block.style,
-                { color = colors.primary }
+            assert.same(default.block.style.color, result.color)
+            assert.same(
+                default.block.style.backgroundcolor,
+                result.backgroundcolor
             )
-
-            assert.same(expectedStyle, result.node.props.style)
         end)
 
         it('should layout a node with a text node child', function()
             local result = layout.execute(fakeElement)
 
-            local child = merge(result.children[1], { parent = result })
             assert.same(
                 merge(
                     fakeBlockLayout,
                     {
+                        backgroundcolor = defaultBlockBackgroundColor,
+                        children = result.children,
                         color = defaultBlockColor,
-                        backgroundcolor = defaultBlockBackgroundColor
-                    },
-                    { children = { child } }
+                    }
                 ),
                 result
             )

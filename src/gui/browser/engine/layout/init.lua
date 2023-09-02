@@ -11,10 +11,17 @@ function Layout.new()
     ---@param node Node
     ---@param parent LayoutObject?
     ---@param previousSibling LayoutObject?
+    ---@param previousNode Node?
     ---@return LayoutObject
-    function self.execute(node, parent, previousSibling)
+    function self.execute(
+        node,
+        parent,
+        parentNode,
+        previousSibling,
+        previousNode
+    )
         parent = parent or {}
-        local parentStyle = parent.node and parent.node.props.style or {}
+        local parentStyle = parentNode and parentNode.props.style or {}
         local parentPadding = parentStyle.padding or emptyBox
         local parentBorder = parentStyle.border or emptyBox
 
@@ -31,7 +38,8 @@ function Layout.new()
             + margin.top
 
         if previousSibling then
-            local previousMargin = previousSibling.node.props.style.margin
+            local previousMargin = previousNode
+                and previousNode.props.style.margin
                 or emptyBox
             if parentStyle.display == 'inline' then
                 x = previousSibling.x
@@ -52,13 +60,13 @@ function Layout.new()
         end
 
         local maxWidth = (parent.width or 160)
-            - (margin.left + margin.right)
-            - (parentBorder.left + parentBorder.right)
+                - (margin.left + margin.right)
+                - (parentBorder.left + parentBorder.right)
             - (parentPadding.left + parentPadding.right)
         local width = style.width or maxWidth
         local height = style.padding.top
-            + style.padding.bottom
-            + style.border.top
+                + style.padding.bottom
+                + style.border.top
             + style.border.bottom
         if (node.type == 'text') then
             width = #node.value
@@ -66,9 +74,6 @@ function Layout.new()
         end
 
         local layoutObject = {
-            node = node,
-            parent = parent,
-            previous = previousSibling or {},
             children = {},
             width = width,
             height = height,
@@ -83,7 +88,9 @@ function Layout.new()
             local layoutChild = self.execute(
                 child,
                 layoutObject,
-                layoutObject.children[i - 1]
+                node,
+                layoutObject.children[i - 1],
+                node.props.children[i - 1]
             )
 
             local notEnoughWidth = style.display == 'inline'
