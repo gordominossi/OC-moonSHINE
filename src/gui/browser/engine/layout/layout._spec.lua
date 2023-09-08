@@ -234,9 +234,10 @@ describe('Layout', function()
     end)
 
     describe('gap', function()
+      local gap = 7
       it('Should have a gap between children', function()
         local input = parser.execute({
-          style = { display = 'flex', gap = 3 },
+          style = { display = 'flex', gap = gap },
           { '', 'text' },
           { '', 'text' },
         })
@@ -244,7 +245,7 @@ describe('Layout', function()
         local result = layout.execute(input)
 
         local child1End = result.children[1].x + result.children[1].width
-        assert.same(3, result.children[2].x - child1End)
+        assert.same(gap, result.children[2].x - child1End)
       end)
     end)
   end)
