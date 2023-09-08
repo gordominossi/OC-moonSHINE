@@ -212,21 +212,39 @@ describe('Layout', function()
       end)
     end)
 
-    describe('justify-content', function()
-      it('Should align the components with the edges of the parent', function()
+    describe('alignment', function()
+      describe('justify-content', function()
+        it(
+          'Should align the components with the edges of the parent',
+          function()
+            local input = parser.execute({
+              style = { display = 'flex', justifycontent = 'space-between' },
+              { '', 'text' },
+              { '', 'text' },
+            })
+
+            local result = layout.execute(input)
+
+            assert.same(0, result.children[1].x)
+            local child2End = result.children[2].x + result.children[2].width
+            assert.same(result.width, child2End)
+          end
+        )
+      end)
+    end)
+
+    describe('gap', function()
+      it('Should have a gap between children', function()
         local input = parser.execute({
-          style = { display = 'flex', aligncontent = 'space-between' },
-          { 'text' },
-          { 'text' },
+          style = { display = 'flex', gap = 3 },
+          { '', 'text' },
+          { '', 'text' },
         })
 
         local result = layout.execute(input)
 
-        assert.same(0, result.children[1].x)
-        assert.same(
-          result.width - result.children[2].width,
-          result.children[2].x
-        )
+        local child1End = result.children[1].x + result.children[1].width
+        assert.same(3, result.children[2].x - child1End)
       end)
     end)
   end)

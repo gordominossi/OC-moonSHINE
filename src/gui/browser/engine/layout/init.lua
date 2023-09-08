@@ -1,11 +1,9 @@
----@type Layout
 local Layout = {}
 
 local emptyBox = { top = 0, right = 0, bottom = 0, left = 0 }
 
----@return Layout
 function Layout.new()
-  ---@class Layout
+  ---@class LayoutObject
   local self = {}
 
   ---@param node Node
@@ -64,9 +62,9 @@ function Layout.new()
 
     if previousSibling then
       if parentStyle.flexdirection == 'row' then
-        y = previousSibling.y + previousSibling.height
+        y = previousSibling.y + previousSibling.height + (parentStyle.gap or 0)
       else
-        x = previousSibling.x + previousSibling.width
+        x = previousSibling.x + previousSibling.width + (parentStyle.gap or 0)
       end
     end
 
@@ -236,7 +234,10 @@ function Layout.new()
         for _, flexChild in ipairs(node.props.children or {}) do
           flexTotal = flexTotal + (flexChild.props.style.flex or { 0 })[1]
         end
-        layoutChild.width = width * (child.props.style.flex or { 0 })[1] / flexTotal
+
+        layoutChild.width = width
+            * (child.props.style.flex or { 0 })[1]
+            / flexTotal
       end
 
       if style.display == 'inline' then

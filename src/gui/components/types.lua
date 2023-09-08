@@ -36,6 +36,7 @@
 ---@field display? displayOptions
 ---@field flex? { [1]: integer }
 ---@field flexdirection? 'row' | 'column'
+---@field gap? integer
 ---@field margin? Box
 ---@field padding? Box
 ---@field border? Box | boolean
