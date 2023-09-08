@@ -3,7 +3,6 @@ local Layout = {}
 local emptyBox = { top = 0, right = 0, bottom = 0, left = 0 }
 
 function Layout.new()
-  ---@class LayoutObject
   local self = {}
 
   ---@param node Node
@@ -216,6 +215,7 @@ function Layout.new()
     }
 
     local childrenHeight = 0
+    local childrenWidth = 0
     for i, child in ipairs(node.props.children) do
       local layoutChild = self.execute(
         child,
@@ -263,7 +263,22 @@ function Layout.new()
             + child.props.style.margin.bottom
       end
 
+      childrenWidth = childrenWidth + layoutChild.width
+
       layoutObject.children[i] = layoutChild
+    end
+
+
+    if style.display == 'flex'
+        and style.flexdirection ~= 'row'
+        and style.justifycontent == 'space-between'
+        and childrenWidth < width
+    then
+      local extraSpace = width - childrenWidth / (#layoutObject.children - 1)
+
+      for i = 2, #layoutObject.children do
+        layoutObject.children[i].x = layoutObject.children[i].x + extraSpace
+      end
     end
 
     layoutObject.height = style.height
