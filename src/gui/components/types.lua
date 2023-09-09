@@ -2,14 +2,32 @@
 
 ---@alias nodeType any
 
----@alias alignOptions
----| 'auto'
----| 'stretch'
+---@alias positionalAlignment
 ---| 'center'
----| 'flvish ex-start'
+---| 'flex-start'
 ---| 'flex-end'
----| 'baseline'
+
+---@alias distributedAlignment
+---| 'space-between'
+---| 'space-around'
+---| 'space-evenly'
+---| 'stretch'
+
+---@alias globalOptions
 ---| 'inherit'
+---| 'unset'
+---| 'initial'
+---| 'revert'
+
+---@alias alignOptions
+---| positionalAlignment
+---| 'auto'
+---| 'baseline'
+
+---@alias justifyOptions
+---| positionalAlignment
+---| distributedAlignment
+---| 'normal'
 
 ---@alias displayOptions
 ---| 'inline'
@@ -31,6 +49,7 @@
 ---@field aligncontent? alignOptions
 ---@field alignitems? alignOptions
 ---@field alignself? alignOptions
+---@field justifycontent? justifyOptions
 ---@field backgroundcolor? integer
 ---@field color? integer
 ---@field display? displayOptions

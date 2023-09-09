@@ -97,7 +97,8 @@ function Layout.new()
         child,
         layoutObject,
         node,
-        layoutObject.children[i - 1]
+        layoutObject.children[i - 1],
+        node.props.children[i - 1]
       )
 
       if parentStyle.flexdirection == 'row' then
@@ -274,15 +275,15 @@ function Layout.new()
         and style.justifycontent == 'space-between'
         and childrenWidth < width
     then
-      local extraSpace = width - childrenWidth / (#layoutObject.children - 1)
-
+      local extraSpace = math.floor(
+        (width - childrenWidth) / (#layoutObject.children - 1)
+      )
       for i = 2, #layoutObject.children do
         layoutObject.children[i].x = layoutObject.children[i].x + extraSpace
       end
     end
 
-    layoutObject.height = style.height
-        or (layoutObject.height + childrenHeight)
+    layoutObject.height = style.height or (layoutObject.height + childrenHeight)
 
     return layoutObject
   end
