@@ -8,14 +8,14 @@ local Text = {}
 ---@param props? Props
 ---@return Text
 function Text.new(props)
-    props = props or {}
-    local _style = merge(default.text.style, props.style)
-    local _props = merge(props, { style = _style })
+  props = props or {}
+  local _style = merge(default.text.style, props.style)
+  local _props = merge(props, { style = _style })
 
-    ---@class Text : Node
-    local self = Node.new('text', _props)
+  ---@class Text : Node
+  local self = Node.new('text', _props)
 
-    return self
+  return self
 end
 
 return Text

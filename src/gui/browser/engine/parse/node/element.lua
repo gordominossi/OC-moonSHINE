@@ -9,10 +9,10 @@ local Element = {}
 ---@param children? Node[]
 ---@return Element
 function Element.new(type, props, children)
-    ---@class Element : Node
-    local self = Node.new(type or 'div', props, children)
+  ---@class Element : Node
+  local self = Node.new(type or 'div', props, children)
 
-    return self
+  return self
 end
 
 return Element
