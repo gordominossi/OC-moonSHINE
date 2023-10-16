@@ -1,291 +1,94 @@
+local traverseBreadthFirst = require('lib.language-extensions').traverseBreadthFirst
+
 local Layout = {}
 
-local emptyBox = { top = 0, right = 0, bottom = 0, left = 0 }
+local Flex = require('src.gui.browser.engine.layout.flex')
+local Normal = require('src.gui.browser.engine.layout.normal')
+
+---@param box LayoutObject
+---@return integer
+local function getHeight(box)
+  if box.text then
+    return 1
+  end
+
+  local maxChildHeight = box.height
+  for _, child in ipairs(box.children) do
+    maxChildHeight = math.max(
+      maxChildHeight,
+      child.y
+      + child.height
+      + child.margin.bottom
+    )
+  end
+
+  if #box.children > 0 then
+    return maxChildHeight
+        - box.y
+        + box.border.bottom
+  end
+
+  return box.height
+      or box.padding.top
+      + box.padding.bottom
+      + box.border.top
+      + box.border.bottom
+end
 
 function Layout.new()
   local self = {}
 
   ---@param node Node
-  ---@param parent LayoutObject?
-  ---@param parentNode Node?
-  ---@param previousSibling LayoutObject?
-  ---@param previousNode Node?
   ---@return LayoutObject
-  function self.execute(
-    node,
-    parent,
-    parentNode,
-    previousSibling,
-    previousNode
-  )
-    if parentNode and parentNode.props.style.display == 'flex' then
-      return self.flex(
-        node,
-        parent,
-        parentNode,
-        previousSibling
-      )
-    end
+  function self.execute(node)
+    local stack = { {
+      node = node,
+      layout = node.props.style.display == 'flex'
+          and Flex.execute(node)
+          or Normal.execute(node),
+    } }
 
-    return self.normal(
-      node,
-      parent,
-      parentNode,
-      previousSibling,
-      previousNode
-    )
-  end
+    local parent = stack[#stack]
+    while #stack > 0 do
+      parent = stack[#stack] or parent
+      local parentLayout = parent.layout
+      local parentNode = parent.node
+      local nodeChildCount = #parentNode.props.children
+      local layoutChildCount = #parentLayout.children
 
-  ---@param node Node
-  ---@param parent LayoutObject?
-  ---@param parentNode Node?
-  ---@param previousSibling LayoutObject?
-  ---@return LayoutObject
-  function self.flex(node, parent, parentNode, previousSibling)
-    parent = parent or {}
-    local parentStyle = parentNode and parentNode.props.style or {}
-    local parentPadding = parentStyle.padding or emptyBox
-    local parentBorder = parentStyle.border or emptyBox
+      if nodeChildCount > layoutChildCount then
+        local childLayoutType = parentNode.props.style.display == 'flex'
+            and Flex
+            or Normal
 
-    local style = node.props.style
-    local margin = style.margin or emptyBox
+        local childNode = parentNode.props.children[layoutChildCount + 1]
+        local previousSibling = parentLayout.children[layoutChildCount]
+        local previousNode = parentNode.props.children[layoutChildCount]
 
-    local x = (parent.x or 0)
-        + parentBorder.left
-        + parentPadding.left
-        + margin.left
-    local y = (parent.y or 0)
-        + parentBorder.top
-        + parentPadding.top
-        + margin.top
+        local childLayout = childLayoutType.execute(
+          childNode,
+          parentLayout,
+          parentNode,
+          previousSibling,
+          previousNode
+        )
+        childLayout.height = getHeight(childLayout)
 
-    if previousSibling then
-      if parentStyle.flexdirection == 'row' then
-        y = previousSibling.y + previousSibling.height + (parentStyle.gap or 0)
+        table.insert(stack, {
+          node = childNode,
+          layout = childLayout,
+        })
+        table.insert(parentLayout.children, childLayout)
+
+        parentLayout.height = getHeight(parentLayout)
       else
-        x = previousSibling.x + previousSibling.width + (parentStyle.gap or 0)
+        table.remove(stack)
+
+        parentLayout.height = getHeight(parentLayout)
       end
     end
 
-    local flexTotal = 0
-    for _, child in ipairs(parentNode and parentNode.props.children or {}) do
-      flexTotal = flexTotal + (child.props.style.flex or { 0 })[1]
-    end
-
-    local width = (style.flex and style.flex[1] == 1)
-        and ((parent.width or parentStyle.width or 160)
-          * (style.flex or { 0 })[1]
-          / flexTotal)
-        or style.width
-    local height = parent.height
-    local children = {}
-    local layoutObject = {
-      children = children,
-      border = style.border or {},
-      width = width,
-      height = height,
-      x = x,
-      y = y,
-      color = style.color,
-      backgroundcolor = style.backgroundcolor,
-    }
-
-    local childrenHeight = 0
-    local childrenWidth = 0
-    for i, child in ipairs(node.props.children) do
-      local layoutChild = self.execute(
-        child,
-        layoutObject,
-        node,
-        layoutObject.children[i - 1],
-        node.props.children[i - 1]
-      )
-
-      if parentStyle.flexdirection == 'row' then
-        layoutChild.width = layoutObject.width
-      else
-        layoutChild.height = layoutObject.height
-      end
-
-      local childMargin = child.props.style.margin
-      local childHeight = layoutChild.height
-          + childMargin.top
-          + childMargin.bottom
-      local childWidth = layoutChild.width
-          + childMargin.right
-          + childMargin.left
-
-      if parentStyle.flexdirection == 'row' then
-        childrenHeight = math.max(childrenHeight, childHeight)
-        childrenWidth = childrenWidth + childWidth
-      else
-        childrenWidth = math.max(childrenWidth, childWidth)
-        childrenHeight = childrenHeight + childHeight
-      end
-
-      layoutObject.children[i] = layoutChild
-    end
-
-    layoutObject.width = childrenWidth
-    layoutObject.height = childrenHeight
-
-    return layoutObject
-  end
-
-  ---@param node Node
-  ---@param parent LayoutObject?
-  ---@param parentNode Node?
-  ---@param previousSibling LayoutObject?
-  ---@param previousNode Node?
-  ---@return LayoutObject
-  function self.normal(
-    node,
-    parent,
-    parentNode,
-    previousSibling,
-    previousNode
-  )
-    parent = parent or {}
-    local parentStyle = parentNode and parentNode.props.style or {}
-    local parentPadding = parentStyle.padding or emptyBox
-    local parentBorder = parentStyle.border or emptyBox
-
-    local style = node.props.style
-    local margin = style.margin or emptyBox
-
-    local x = (parent.x or 0)
-        + parentBorder.left
-        + parentPadding.left
-        + margin.left
-    local y = (parent.y or 0)
-        + parentBorder.top
-        + parentPadding.top
-        + margin.top
-
-    if previousSibling then
-      local previousMargin = previousNode
-          and previousNode.props.style.margin
-          or emptyBox
-      if parentStyle.display == 'inline' then
-        x = previousSibling.x
-            + previousSibling.width
-            + #' '
-            + math.max(
-              previousMargin.right,
-              margin.left
-            )
-      else
-        y = previousSibling.y
-            + previousSibling.height
-            + math.max(
-              previousMargin.bottom,
-              margin.top
-            )
-      end
-    end
-
-    local maxWidth = parent.width
-        and (parent.width
-          - (margin.left + margin.right)
-          - (parentBorder.left + parentBorder.right)
-          - (parentPadding.left + parentPadding.right))
-        or (parentStyle.display ~= 'flex'
-          and style.display == 'block'
-          and 160)
-    local width = style.width or maxWidth or 160
-    local height = style.height or
-        (style.padding.top
-          + style.padding.bottom
-          + style.border.top
-          + style.border.bottom)
-    if (node.type == 'text') then
-      width = #node.value
-      height = 1
-    end
-
-    local layoutObject = {
-      text = node.type == 'text' and node.value --[[@as string]] or nil,
-      children = {},
-      border = style.border,
-      width = width,
-      height = height,
-      x = x,
-      y = y,
-      color = style.color,
-      backgroundcolor = style.backgroundcolor,
-    }
-
-    local childrenHeight = 0
-    local childrenWidth = 0
-    for i, child in ipairs(node.props.children) do
-      local layoutChild = self.execute(
-        child,
-        layoutObject,
-        node,
-        layoutObject.children[i - 1],
-        node.props.children[i - 1]
-      )
-
-      if style.display == 'flex'
-          and style.flexdirection ~= 'row'
-          and child.props.style.flex
-          and child.props.style.flex[1]
-      then
-        local flexTotal = 0
-        for _, flexChild in ipairs(node.props.children or {}) do
-          flexTotal = flexTotal + (flexChild.props.style.flex or { 0 })[1]
-        end
-
-        layoutChild.width = width
-            * (child.props.style.flex or { 0 })[1]
-            / flexTotal
-      end
-
-      if style.display == 'inline' then
-        layoutChild.text = child.value
-      end
-
-      local notEnoughWidth = style.display == 'inline'
-          and layoutChild.x + layoutChild.width > (width or 160)
-      if notEnoughWidth then
-        layoutChild.x = x
-            + style.padding.left
-            + child.props.style.margin.left
-        layoutChild.y = y + style.padding.top + childrenHeight
-      end
-
-      if childrenHeight == 0
-          or style.display == 'block'
-          or notEnoughWidth
-      then
-        childrenHeight = childrenHeight
-            + layoutChild.height
-            + child.props.style.margin.top
-            + child.props.style.margin.bottom
-      end
-
-      childrenWidth = childrenWidth + layoutChild.width
-
-      layoutObject.children[i] = layoutChild
-    end
-
-
-    if style.display == 'flex'
-        and style.flexdirection ~= 'row'
-        and style.justifycontent == 'space-between'
-        and childrenWidth < width
-    then
-      local extraSpace = math.floor(
-        (width - childrenWidth) / (#layoutObject.children - 1)
-      )
-      for i = 2, #layoutObject.children do
-        layoutObject.children[i].x = layoutObject.children[i].x + extraSpace
-      end
-    end
-
-    layoutObject.height = style.height or (layoutObject.height + childrenHeight)
-
-    return layoutObject
+    return parent.layout
   end
 
   return self

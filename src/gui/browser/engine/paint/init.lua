@@ -43,7 +43,7 @@ function Paint.new()
       )
 
       local border = input.border
-      local verticalBar = string.rep('|', input.height)
+      local verticalBar = string.rep('|', input.height - 1)
       local horizontalBar = string.rep('—', input.width - 2)
       local borderInstruction = {
         type = 'set',

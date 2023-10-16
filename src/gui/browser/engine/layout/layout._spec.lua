@@ -19,7 +19,7 @@ describe('Layout', function()
   describe('normal flow', function()
     describe('block', function()
       it('Should be layed out one after another, vertically', function()
-        local input = parser.execute({ 'div', 'text', 'text' })
+        local input = parser.execute({ 'div', 'text1', 'text2' })
 
         local result = layout.execute(input)
 
@@ -31,8 +31,8 @@ describe('Layout', function()
         local input = parser.execute({
           'div',
           style = { margin = { left = 3 } },
-          'text',
-          'text',
+          'text1',
+          'text2',
         })
 
         local result = layout.execute(input)
@@ -45,8 +45,8 @@ describe('Layout', function()
         local input = parser.execute({
           'div',
           style = { width = 16 },
-          { 'div', 'text' },
-          { 'div', 'text' },
+          { 'div', 'text1' },
+          { 'div', 'text2' },
         })
 
         local result = layout.execute(input)
@@ -56,15 +56,27 @@ describe('Layout', function()
       end)
 
       it('Should have just enough height to fit its content', function()
-        local input = parser.execute({ 'div', 'text', 'text' })
+        local input = parser.execute({
+          'div',
+          { type = 'div', style = { height = 1 } },
+          { type = 'div', style = { height = 10 } },
+        })
 
         local result = layout.execute(input)
 
-        local childrenHeight = 0
-        for _, child in ipairs(result.children) do
-          childrenHeight = childrenHeight + child.height
-        end
-        assert.same(childrenHeight, result.height)
+        assert.same(11, result.height)
+      end)
+
+      it('Should have enough height to fit nested content', function()
+        local input = parser.execute({ {
+          'div',
+          { type = 'div', style = { height = 1 } },
+          { type = 'div', style = { height = 10 } },
+        } })
+
+        local result = layout.execute(input)
+
+        assert.same(11, result.height)
       end)
     end)
 
@@ -87,8 +99,8 @@ describe('Layout', function()
           {
             'div',
             style = { display = 'inline' },
-            'text',
-            'text',
+            'text1',
+            'text2',
           }
         )
 
@@ -96,7 +108,7 @@ describe('Layout', function()
 
         assert.same(result.x, result.children[1].x)
         assert.same(result.y, result.children[1].y)
-        assert.same(result.x + #'text' + #' ', result.children[2].x)
+        assert.same(result.x + #'text1' + #' ', result.children[2].x)
         assert.same(result.y, result.children[2].y)
       end)
 
@@ -106,9 +118,9 @@ describe('Layout', function()
           local input = parser.execute(
             {
               'div',
-              style = { display = 'inline', width = #'text' },
-              'text',
-              'text',
+              style = { display = 'inline', width = #'text1' },
+              'text1',
+              'text2',
             }
           )
 
@@ -128,17 +140,17 @@ describe('Layout', function()
         {
           'div',
           style = { display = 'inline', margin = 5 },
-          'text',
+          'text1',
           'text2',
         },
-        { 'div', style = { margin = 2 }, 'text' },
+        { 'div', style = { margin = 2 }, 'text1' },
         {
           'div',
-          style = { display = 'inline', width = 9 },
-          'text',
-          'text2',
+          style = { display = 'inline', width = 8, margin = { 1 } },
+          'text3',
+          'text4',
         },
-        { 'div', style = { margin = 6 }, 'text' },
+        { 'div', style = { margin = 6 }, 'text2' },
       })
 
       local result = layout.execute(input)
@@ -155,21 +167,21 @@ describe('Layout', function()
       it('Should lay out its children in columns by default', function()
         local input = parser.execute({
           style = { display = 'flex' },
-          { 'div', 'text' },
-          { 'div', 'text' },
+          { 'div', 'text1' },
+          { 'div', 'text2' },
         })
 
         local result = layout.execute(input)
 
         assert.same(0, result.children[1].x)
-        assert.same(#'text', result.children[2].x)
+        assert.same(#'text2', result.children[2].x)
       end)
 
       it('Should strech its children to fill parent height', function()
         local input = parser.execute({
           style = { display = 'flex', height = 30 },
-          { 'div', 'text' },
-          { 'div', 'text' },
+          { 'div', 'text1' },
+          { 'div', 'text2' },
         })
 
         local result = layout.execute(input)
@@ -184,8 +196,8 @@ describe('Layout', function()
         it('Should divide it\'s width equally among its children', function()
           local input = parser.execute({
             style = { display = 'flex' },
-            { 'div', style = { flex = { 1 } }, 'text' },
-            { 'div', style = { flex = { 1 } }, 'text' },
+            { 'div', style = { flex = { 1 } }, 'text1' },
+            { 'div', style = { flex = { 1 } }, 'text2' },
           })
 
           local result = layout.execute(input)
@@ -199,8 +211,8 @@ describe('Layout', function()
           function()
             local input = parser.execute({
               style = { display = 'flex' },
-              { 'div', style = { flex = { 1 } }, 'text' },
-              { 'div', style = { flex = { 2 } }, 'text' },
+              { 'div', style = { flex = { 1 } }, 'text1' },
+              { 'div', style = { flex = { 2 } }, 'text2' },
             })
 
             local result = layout.execute(input)
@@ -213,14 +225,14 @@ describe('Layout', function()
     end)
 
     describe('alignment', function()
-      describe('justify-content', function()
+      describe('justify content', function()
         it(
           'Should align the components with the edges of the parent',
           function()
             local input = parser.execute({
               style = { display = 'flex', justifycontent = 'space-between' },
-              { '', 'text' },
-              { '', 'text' },
+              { '', 'text1' },
+              { '', 'text2' },
             })
 
             local result = layout.execute(input)
@@ -238,8 +250,8 @@ describe('Layout', function()
       it('Should have a gap between children', function()
         local input = parser.execute({
           style = { display = 'flex', gap = gap },
-          { '', 'text' },
-          { '', 'text' },
+          { '', 'text1' },
+          { '', 'text2' },
         })
 
         local result = layout.execute(input)
@@ -257,15 +269,17 @@ describe('Layout', function()
 
     ---@type LayoutObject
     local fakeTextLayout = {
-      text = 'Fake text',
+      backgroundcolor = colors.background,
       border = default.block.style.border,
       children = {},
-      width = #'Fake text',
+      color = colors.default,
       height = 1,
+      margin = default.block.style.margin,
+      padding = default.block.style.padding,
+      text = 'Fake text',
+      width = #'Fake text',
       x = 0,
       y = 0,
-      color = colors.default,
-      backgroundcolor = colors.background,
     }
 
     it('should layout a text node', function()
@@ -317,14 +331,16 @@ describe('Layout', function()
 
     ---@type LayoutObject
     local fakeBlockLayout = {
+      backgroundcolor = colors.background,
       border = default.block.style.border,
       children = {},
-      width = 160,
+      color = colors.default,
       height = 1,
+      margin = default.block.style.margin,
+      padding = default.block.style.padding,
+      width = 160,
       x = 0,
       y = 0,
-      color = colors.default,
-      backgroundcolor = colors.background,
     }
 
     it('should list children', function()

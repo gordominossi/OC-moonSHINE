@@ -93,15 +93,17 @@
 ---@field props Props
 
 ---@class LayoutObject
+---@field backgroundcolor integer
+---@field border Box | boolean
 ---@field children LayoutObject[]
+---@field color integer
 ---@field height integer
+---@field margin Box
+---@field padding Box
+---@field text? string
 ---@field width integer
 ---@field x integer
 ---@field y integer
----@field color integer
----@field backgroundcolor integer
----@field border Box | boolean
----@field text? string
 
 ---@class PaintObject
 ---@field type string
