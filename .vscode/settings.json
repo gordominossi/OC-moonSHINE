@@ -5,5 +5,10 @@
       "quote_style": "single",
       "continuous_assign_statement_align_to_equal_sign": "false",
       "continuous_assign_table_field_align_to_equal_sign": "false"
-    }
+    },
+    "Lua.workspace.checkThirdParty": false,
+    "Lua.workspace.library": [
+      "${3rd}/luassert/library",
+      "${3rd}/busted/library",
+    ]
 }

@@ -1,10 +1,10 @@
+local describe = _ENV.describe
+local it = _ENV.it
+
 local extensions = require('lib.language-extensions')
 local mergeTables = extensions.mergeTables
 local traverseBreadthFirst = extensions.traverseBreadthFirst
 local findOnPath = extensions.findOnPath
-
-local describe = _ENV.describe
-local it = _ENV.it
 
 describe('language extensions', function()
   describe('mergeTables', function()

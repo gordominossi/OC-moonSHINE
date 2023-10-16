@@ -10,7 +10,6 @@
         "scope": "lua",
         "prefix": "class",
         "body": [
-            "---@type $1",
             "local $1 = {}",
             "",
             "---@return $1",
