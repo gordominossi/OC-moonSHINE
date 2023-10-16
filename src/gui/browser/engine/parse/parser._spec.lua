@@ -68,20 +68,21 @@ describe('LuaX parser', function()
 
     it('should call the component if it is a function', function()
       local stubComponent = { function() end }
-      stub(stubComponent, 1)
+      ---@diagnostic disable-next-line: param-type-mismatch
+      local st = stub(stubComponent, 1)
 
       parser.execute(stubComponent)
 
-      assert.stub(stubComponent[1]).was_called()
+      assert.stub(st).called_at_least(1)
     end)
 
     it('should call the type if it is a function', function()
       local stubComponent = { type = function() end }
-      stub(stubComponent, 'type')
+      local st = stub(stubComponent, 'type')
 
       parser.execute(stubComponent)
 
-      assert.stub(stubComponent.type).was_called()
+      assert.stub(st).called_at_least(1)
     end)
 
     it(
@@ -95,11 +96,12 @@ describe('LuaX parser', function()
           typeFunction,
           text = 'Testing',
         }
-        spy.on(spyComponent, 1)
+        ---@diagnostic disable-next-line: param-type-mismatch
+        local sp = spy.on(spyComponent, 1)
 
         local result = parser.execute(spyComponent)
 
-        assert.spy(spyComponent[1]).was_called()
+        assert.spy(sp).called_at_least(1)
         assert.equal('fakeType', result.type)
         assert.equal(spyComponent.text, result.value)
       end
@@ -117,7 +119,7 @@ describe('LuaX parser', function()
       local result = parser.execute(input)
 
       local child = result.props.children[1]
-      assert.not_same(
+      assert.are_not_same(
         result.props.style.padding,
         child.props.style.padding
       )

@@ -1,9 +1,7 @@
--- local merge = require('lib.language-extensions').mergeTables
-
 local Node = require('src.gui.browser.engine.parse.node.node')
 
----@type Element
 local Element = {}
+
 ---@param type? string
 ---@param props? Props
 ---@param children? Node[]

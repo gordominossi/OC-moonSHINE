@@ -18,7 +18,7 @@ describe('language extensions', function()
       local result = mergeTables(fakeTable)
 
       assert.same(fakeTable, result)
-      assert.not_equal(fakeTable, result)
+      assert.are_not_equal(fakeTable, result)
     end)
 
     it(
@@ -26,8 +26,8 @@ describe('language extensions', function()
       function()
         local result = mergeTables(fakeTable, { 'newOne', three = 14 })
 
-        assert.not_same(fakeTable, result)
-        assert.not_equal(fakeTable, result)
+        assert.are_not_same(fakeTable, result)
+        assert.are_not_equal(fakeTable, result)
 
         assert.same(
           {
@@ -48,8 +48,8 @@ describe('language extensions', function()
         { [4] = 'four' }
       )
 
-      assert.not_same(fakeTable, result)
-      assert.not_equal(fakeTable, result)
+      assert.are_not_same(fakeTable, result)
+      assert.are_not_equal(fakeTable, result)
 
       assert.same(
         {

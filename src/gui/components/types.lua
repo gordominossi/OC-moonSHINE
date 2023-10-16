@@ -1,41 +1,35 @@
----@meta
+---@meta Browser
 
 ---@alias nodeType any
 
 ---@alias positionalAlignment
 ---| 'center'
----| 'flex-start'
 ---| 'flex-end'
+---| 'flex-start'
 
 ---@alias distributedAlignment
----| 'space-between'
 ---| 'space-around'
+---| 'space-between'
 ---| 'space-evenly'
 ---| 'stretch'
 
----@alias globalOptions
----| 'inherit'
----| 'unset'
----| 'initial'
----| 'revert'
-
 ---@alias alignOptions
----| positionalAlignment
 ---| 'auto'
 ---| 'baseline'
+---| positionalAlignment
 
 ---@alias justifyOptions
----| positionalAlignment
----| distributedAlignment
 ---| 'normal'
+---| distributedAlignment
+---| positionalAlignment
 
 ---@alias displayOptions
----| 'inline'
 ---| 'block'
----| 'inline-block'
 ---| 'flex'
 ---| 'grid'
 ---| 'inherit'
+---| 'inline-block'
+---| 'inline'
 ---| 'none'
 
 ---@alias Box
@@ -49,48 +43,37 @@
 ---@field aligncontent? alignOptions
 ---@field alignitems? alignOptions
 ---@field alignself? alignOptions
----@field justifycontent? justifyOptions
 ---@field backgroundcolor? integer
+---@field border? Box | boolean
 ---@field color? integer
 ---@field display? displayOptions
 ---@field flex? { [1]: integer }
 ---@field flexdirection? 'row' | 'column'
 ---@field gap? integer
+---@field height? integer
+---@field justifycontent? justifyOptions
 ---@field margin? Box
 ---@field padding? Box
----@field border? Box | boolean
----@field width? integer
----@field height? integer
 ---@field visible? boolean
+---@field width? integer
 
 ---@alias text string | number
 
----@class Component : table
+---@class Component
 ---@field [1] text | function | Component tag or child
----@field [string] any attribute
 ---@field [number]? text | Component child
-
----if positive, is relative to the start of the parent Component if negative, is relative to the end of the parent Component
----@class Coordinate2D
----@field x number
----@field y number
-
----@class Attributes
----@field border? boolean
----@field display? displayOptions
----@field flexdirection? 'row' | 'column'
----@field visible? boolean
+---@field [string] any attribute
 
 ---@class Props
 ---@field children Component[]
----@field attributes Attributes
 ---@field style Style
 ---@field type? nodeType | string
+---@field value text | function | Component
 
 ---@class Node
+---@field props { children: Node[], style: Style }
 ---@field type nodeType
----@field value? string | number | function | Component
----@field props Props
+---@field value? text | function | Component
 
 ---@class LayoutObject
 ---@field backgroundcolor integer
@@ -106,12 +89,12 @@
 ---@field y integer
 
 ---@class PaintObject
----@field type string
----@field x integer
----@field y integer
+---@field backgroundcolor integer
+---@field color integer
 ---@field height integer
----@field width integer
+---@field type string
 ---@field value string
 ---@field vertical boolean
----@field color integer
----@field backgroundcolor integer
+---@field width integer
+---@field x integer
+---@field y integer

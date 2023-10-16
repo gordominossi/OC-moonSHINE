@@ -1,7 +1,6 @@
 local colors = require('lib.colors')
 local merge = require('lib.language-extensions').mergeTables
 
----@type Paint
 local Paint = {}
 
 ---@return Paint

@@ -1,5 +1,3 @@
-local traverseBreadthFirst = require('lib.language-extensions').traverseBreadthFirst
-
 local Layout = {}
 
 local Flex = require('src.gui.browser.engine.layout.flex')

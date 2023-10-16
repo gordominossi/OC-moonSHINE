@@ -474,6 +474,7 @@ describe('Layout', function()
       assert.same(0, result.x)
 
       local childList = traverseBreadthFirst(result.children)
+
       for _, child in ipairs(childList) do
         assert.same(padding, child.x)
       end
